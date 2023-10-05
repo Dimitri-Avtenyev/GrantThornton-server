@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts"
+    "start": "ts-node src/server.ts",
+    "build": "tsc",
+    "test" : "jest"
   },
   "author": "Dimitri Avtenyev <dimitri.avtenyev@gmail.com> (https://github.com/Dimitri-Avtenyev)",
   "contributors": [
