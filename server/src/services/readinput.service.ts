@@ -31,7 +31,7 @@ const loadXlsxFile = async ():Promise<ExcelJs.Workbook> => {
 // test printing in console
 const readXlsxDataInConsole = async () => {
   let xlsx:ExcelJs.Workbook =   await loadXlsxFile();
-  let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[1];
+  let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
   
   let firstColumn:ExcelJs.Column = firstSheet.getColumn(1);
 
