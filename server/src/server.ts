@@ -1,8 +1,9 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import express, { Response } from "express";
+import express from "express";
 import cors from "cors";
+import readInput from "./routes/readInput.route";
 
 const app = express();
 
@@ -16,12 +17,9 @@ app.use(cors( {
 
 app.set("port", process.env.PORT || 3000);
 
-// quick example sending json on route '/'
-app.get("/", async (req, res):Promise<Response> => {
-  const servermsg = {server : "hello"};
+// pass routes as router middleware
+app.use("/readinput", readInput);
 
-  return res.status(200).json(servermsg);
-});
 //
 
 app.listen(app.get("port"), () => {
