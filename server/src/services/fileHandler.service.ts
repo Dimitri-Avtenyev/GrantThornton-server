@@ -7,45 +7,22 @@ const OUTPUT_DIR = "./src/output";
 const files: string[] = fs.readdirSync(INPUT_DIR);
 
 
-const printFileNames = () => {
-  files.forEach(file => console.log(file));
-}
+// create workbook instance
+const main = async (workbook: ExcelJs.Workbook) => {
 
-const getFilePathName = (name: string): string => {
-  let filename: string | undefined = files.find(file => file === name);
-  if (!filename) {
-    console.log("No file has been found or dir is empy");
-    return "";
-  }
-
-  return filename;
-}
-// create workbook on global file level 
-const WORKBOOK:ExcelJs.Workbook = new ExcelJs.Workbook();
-
-const loadXlsxFile = async ():Promise<ExcelJs.Workbook> => {
-  return await WORKBOOK.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
-}
-
-// test printing in console
-const readXlsxDataInConsole = async () => {
-  let xlsx:ExcelJs.Workbook =   await loadXlsxFile();
+  let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
+  // demo firstsheet, find value then write back to xlsx file
   let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
-  
-  let firstColumn:ExcelJs.Column = firstSheet.getColumn(1);
 
-  // prints values of each cell of first column
-  //firstColumn.eachCell(c => console.log(c.value));
   findFxValue(firstSheet);
 
-  // add some values
-  // then e.g. write to file
-
   firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
-  //WORKBOOK.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
-  //  .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
+  workbook.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
+    .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
+
 }
 
+// demo find value and print location found said value
 const findFxValue = async (input: ExcelJs.Worksheet) => {
   let columnLetter:string = "";
  
@@ -58,7 +35,6 @@ const findFxValue = async (input: ExcelJs.Worksheet) => {
     });
   }
   console.log(`Foreign exchange symbols are found @ col ${columnLetter}`);
-
 }
 
 const checkFileExt = async (fileName:string):Promise<boolean> => {
@@ -72,9 +48,6 @@ const checkFileExt = async (fileName:string):Promise<boolean> => {
 }
 
 export default {
-  getFilePathName,
-  printFileNames,
-  loadXlsxFile,
-  readXlsxDataInConsole,
+  main,
   checkFileExt
 };

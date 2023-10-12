@@ -4,7 +4,7 @@ import fileHandlerController from "../controllers/fileInput.controller";
 const router = express.Router();
 
 // get for demo purpose
-router.get('/', fileHandlerController.getFileLocalDemo);
+router.get('/demo', fileHandlerController.getFileLocalDemo);
 
 // upload file
 router.post("/", fileHandlerController.getFile);

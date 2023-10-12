@@ -2,12 +2,13 @@ import { Request, Response } from "express"
 import fileHandlerService from "../services/fileHandler.service";
 import path from "path";
 import fs from "fs/promises";
+import ExcelJs from "exceljs";
 
 interface FileUploadData {
   file: string; //base64 encoded file data
   fileName: string; 
 }
-
+// get the uploaded file through POST in body, encoded in base64
 const getFile = async (req:Request, res:Response):Promise<Response> => {
   const {file, fileName}:FileUploadData = req.body;
 
@@ -29,13 +30,16 @@ const getFile = async (req:Request, res:Response):Promise<Response> => {
 
   await fs.writeFile(filePath, fileBuffer);
 
+  let workbook:ExcelJs.Workbook = new ExcelJs.Workbook();
+  await fileHandlerService.main(workbook);
+
   return res.status(200).send({message: "file uploaded succesfully"});
 }
 
+// for demo purposes
 const getFileLocalDemo = async (req:Request, res:Response):Promise<Response> => {
-
-
-  await fileHandlerService.readXlsxDataInConsole();
+  let workbook:ExcelJs.Workbook = new ExcelJs.Workbook();
+  await fileHandlerService.main(workbook);
  
   return res.status(200).send({message: "file uploaded succesfully"});
 }
