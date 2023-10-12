@@ -3,7 +3,7 @@ dotenv.config();
 
 import express from "express";
 import cors from "cors";
-import readInput from "./routes/readInput.route";
+import readInput from "./routes/fileHandler.route";
 
 const app = express();
 
@@ -17,10 +17,9 @@ app.use(cors( {
 
 app.set("port", process.env.PORT || 3000);
 
-// pass routes as router middleware
-app.use("/readinput", readInput);
+// router middleware
+app.use("/uploadfile", readInput);
 
-//
 
 app.listen(app.get("port"), () => {
   console.log(`--- server started at port: ${app.get("port")} ---`);

@@ -1,11 +1,10 @@
 import ExcelJs from "exceljs";
-import path from "path";
 import fs from "fs";
+import path from "path";
 
 const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
 const files: string[] = fs.readdirSync(INPUT_DIR);
-
 
 
 const printFileNames = () => {
@@ -43,8 +42,8 @@ const readXlsxDataInConsole = async () => {
   // then e.g. write to file
 
   firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
-  WORKBOOK.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
-    .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
+  //WORKBOOK.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
+  //  .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
 }
 
 const findFxValue = async (input: ExcelJs.Worksheet) => {
@@ -62,11 +61,20 @@ const findFxValue = async (input: ExcelJs.Worksheet) => {
 
 }
 
+const checkFileExt = async (fileName:string):Promise<boolean> => {
+  const allowedFileExtension:string = ".xlsx"
+  const fileExtension = path.extname(fileName).toLowerCase();
 
+  if (allowedFileExtension !== fileExtension) {
+    throw new Error("File extension not allowed");
+  }
+  return allowedFileExtension === fileExtension;
+}
 
 export default {
   getFilePathName,
   printFileNames,
   loadXlsxFile,
-  readXlsxDataInConsole
+  readXlsxDataInConsole,
+  checkFileExt
 };
