@@ -11,7 +11,8 @@ const files: string[] = fs.readdirSync(INPUT_DIR);
 const main = async (workbook: ExcelJs.Workbook) => {
 
   let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
-  // demo firstsheet, find value then write back to xlsx file
+  
+  // DEMO firstsheet, find value then write back to xlsx file
   let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
 
   findFxValue(firstSheet);
@@ -20,6 +21,8 @@ const main = async (workbook: ExcelJs.Workbook) => {
   workbook.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
     .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
 
+
+  // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
 
 // demo find value and print location found said value
