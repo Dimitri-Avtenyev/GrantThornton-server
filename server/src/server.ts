@@ -3,7 +3,7 @@ dotenv.config();
 
 import express from "express";
 import cors from "cors";
-import readInput from "./routes/fileHandler.route";
+import fileHandleRoute from "./routes/fileHandler.route";
 
 const app = express();
 
@@ -11,14 +11,14 @@ const app = express();
 app.use(express.json({limit: "1mb"}));
 app.use(express.urlencoded({extended: true}));
 app.use(cors( {
-  origin: [],
+  origin: ["http://localhost:3001"],
   credentials: true
 }));
 
 app.set("port", process.env.PORT || 3000);
 
 // router middleware
-app.use("/uploadfile", readInput);
+app.use("/uploadfile", fileHandleRoute);
 
 
 app.listen(app.get("port"), () => {
