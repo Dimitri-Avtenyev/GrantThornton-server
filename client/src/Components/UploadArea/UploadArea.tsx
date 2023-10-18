@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react'
 import {FileRejection, useDropzone} from 'react-dropzone'
-
+import styles from "./UploadArea.module.css";
 
 
 const UploadArea = () => {
@@ -49,7 +49,7 @@ const UploadArea = () => {
     }
 
     return (
-        <div>
+        <div className={styles.uploadArea}>
             <form onSubmit={handleSubmit}>
                 <div {...getRootProps()}>
                 <input {...getInputProps()} />
@@ -61,20 +61,21 @@ const UploadArea = () => {
                 </div>
             </form>
 
-            <button>Convert currency</button>
+            <button className={styles.convertButton}>Convert</button>
 
             <ul>
                 {files.map(file => (
-                    <div>
+                    <div className={styles.fileList}>
                         <li key={file.name}>
                             {file.name}
                         </li>
-                        <button onClick={() => removeFile(file.name)}></button>
+                        <button onClick={() => removeFile(file.name)}>X</button>
                     </div>
                 ))}
             </ul>
 
-            <ul>
+            {/*CODE TO SHOW ERRORS*/}
+            {/* <ul> 
                 {rejected.map(({file, errors}) => (
                     <div>
                         <li key={file.name}>{file.name}</li>
@@ -83,11 +84,11 @@ const UploadArea = () => {
                                 <p key={error.code}>File must be Excel File</p>
                             ))}
                         </ul>
-                        <button onClick={() => removeRejected(file.name)}></button>
+                        <button onClick={() => removeRejected(file.name)}>Remove</button>
                     </div>
                     
                 ))}
-            </ul>
+            </ul> */}
         </div>
     )
 }
