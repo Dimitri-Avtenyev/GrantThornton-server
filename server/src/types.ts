@@ -1,4 +1,7 @@
 // EXR
+export interface ExchangeRateDict {
+  [date:string] : ExchangeRate[]
+}
 export interface ExchangeRate {
   symbol: string;
   rate:   number;

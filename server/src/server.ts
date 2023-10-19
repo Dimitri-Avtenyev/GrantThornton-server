@@ -25,7 +25,7 @@ app.use("/uploadfile", fileHandleRoute);
 
 app.listen(app.get("port"), async () => {
   // demo test rates on start
-  await exchangeRateService.getEurRates(new Date("2023-10-18"));
+  await exchangeRateService.getEurRates(new Date("2023-10-16"), "2023-10-18");
 
   const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
   console.log(`---/ server started at port: ${app.get("port")} \\---`);
