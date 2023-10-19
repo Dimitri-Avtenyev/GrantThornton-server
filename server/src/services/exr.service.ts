@@ -24,7 +24,6 @@ const getEurRates = async (date:Date, startPediod?:string, endPeriod?:string, fo
     console.log("Date should be at least one day in the past");
   }
   startPediod = date.toISOString().split("T")[0];
-  console.log(startPediod);
   const response = await fetch(`${entryPoint}?startPeriod=${startPediod}&endPeriod=${endPeriod}&format=${format}&detail=dataonly`);
   const data:ExchangeRateData = await response.json();
 
@@ -38,9 +37,7 @@ const getEurRates = async (date:Date, startPediod?:string, endPeriod?:string, fo
     
     eurRates.push(eurRate)
   }
-  console.log(eurRates);
-  
-  
+
 return eurRates;
 }
 
@@ -57,5 +54,6 @@ const atLeastOneDayOlder = (date:Date):boolean => {
 }
 
 export default {
-  getEurRates
+  getEurRates,
+  atLeastOneDayOlder
 }
