@@ -22,5 +22,7 @@ app.use("/uploadfile", fileHandleRoute);
 
 
 app.listen(app.get("port"), () => {
-  console.log(`--- server started at port: ${app.get("port")} ---`);
+  const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
+  console.log(`---/ server started at port: ${app.get("port")} \\---`);
+  console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);
 });
