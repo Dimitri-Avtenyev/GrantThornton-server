@@ -1,6 +1,6 @@
 import { ExchangeRate, ExchangeRateData, ExchangeRateDict } from "../types";
-
-// example data retrieval from "ECB"
+import fs from "fs/promises";
+//--- data retrieval from "ECB ---//
 // D = Day, . = wildcard (can be filled with other symbols), EUR = symbol, 
 // SP00 = ECB foreign exchange reference rates – code, A = time variation
 // ---
@@ -27,30 +27,36 @@ const getEurRates = async (date: Date, endPeriod?: string, format: string = "jso
   const response = await fetch(`${entryPoint}?startPeriod=${startPediod}&endPeriod=${endPeriod}&format=${format}&detail=dataonly`);
   const data: ExchangeRateData = await response.json();
 
-  let eurRates: ExchangeRateDict = {};
-
-  for (let i = 0; i < Object.keys(data.dataSets[0].series).length; i++) {
-    for (let j = 0; j < Object.keys(data.dataSets[0].series[`0:${i}:0:0:0`].observations).length; j++) {
-      let eurRate: ExchangeRate =
-      {
-        symbol: data.structure.dimensions.series[1].values[i].id,
-        rate: data.dataSets[0].series[`0:${i}:0:0:0`].observations[j][0]
-      }
-      if (eurRates[data.structure.dimensions.observation[0].values[j].id] !== undefined) {
-        eurRates[data.structure.dimensions.observation[0].values[j].id].push(eurRate);
-      } else {
-        eurRates[data.structure.dimensions.observation[0].values[j].id] = [eurRate]
-      }
-    }
-  }
+  // dict builder
+  let eurRates: ExchangeRateDict = await exchangeRateDictBuilderECB(data);
 
   return eurRates;
 }
 
 
-// example data retrieval from "exchangeratesapi"
+//--- data retrieval from "exchangeratesapi" ---///
+//   todo
+// --- ---///
 
+const exchangeRateDictBuilderECB = async (data: ExchangeRateData): Promise<ExchangeRateDict> => {
+  let eurRates: ExchangeRateDict = {};
+  for (let i = 0; i < Object.keys(data.structure.dimensions.observation[0].values).length; i++) {
 
+    for (let j = 0; j < Object.keys(data.dataSets[0].series).length; j++) {
+      let eurRate: ExchangeRate =
+      {
+        symbol: data.structure.dimensions.series[1].values[j].id,
+        rate: data.dataSets[0].series[`0:${j}:0:0:0`].observations[i][0]
+      }
+      if (eurRates[data.structure.dimensions.observation[0].values[i].id] !== undefined) {
+        eurRates[data.structure.dimensions.observation[0].values[i].id].push(eurRate);
+      } else {
+        eurRates[data.structure.dimensions.observation[0].values[i].id] = [eurRate]
+      }
+    }
+  }
+  return eurRates;
+}
 const atLeastOneDayOlder = (date: Date): boolean => {
   const today: Date = new Date();
   const timeDiff = today.getTime() - date.getTime();
@@ -61,5 +67,6 @@ const atLeastOneDayOlder = (date: Date): boolean => {
 
 export default {
   getEurRates,
+  exchangeRateDictBuilderECB,
   atLeastOneDayOlder
 }
