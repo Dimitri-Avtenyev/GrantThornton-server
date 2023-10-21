@@ -1,6 +1,7 @@
+import { writeFile } from "fs";
 import { dbClient } from "../db";
-import { ExchangeRateDict } from "../types";
-
+import { ExchangeRate, ExchangeRateDict } from "../types";
+import fs from "fs/promises";
 
 const getDbData = async (date?: Date): Promise<ExchangeRateDict | null> => {
   let _data: ExchangeRateDict | null = null;
@@ -73,12 +74,35 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
   }
 }
 
-const getLocalData = async (): Promise<void> => {
+const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
+  let _data: ExchangeRateDict|null = null;
+  let query: string | undefined =  date?.toISOString().split("T")[0];
 
+  const files: string[] = await fs.readdir("./src/localData");
+  // load, if exists, document locally
+  try {
+    let localData = await fs.readFile("./src/localData/"+files[0], "utf-8");
+    if (!localData) {
+      console.log("No data present or no such file");
+    }
+    _data = JSON.parse(localData);
+  } catch (err) {
+    console.log(err);
+  }
+ if(!_data || !_data[query]) {
+  return [];
+ } 
+
+  return _data[query];
 }
 
-const saveLocalData = async (): Promise<void> => {
-
+const saveLocalData = async (rates:ExchangeRateDict): Promise<void> => {
+  const files: string[] = await fs.readdir("./src/localData");
+// todo conditions add single data to existing file
+  if(files[0] !== "eurRates.json") {
+    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates), "utf-8");
+  } 
+  
 }
 
 export default {

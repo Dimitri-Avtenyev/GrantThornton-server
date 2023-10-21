@@ -1,5 +1,5 @@
 import { ExchangeRate, ExchangeRateData, ExchangeRateDict } from "../types";
-import fs from "fs/promises";
+
 //--- data retrieval from "ECB ---//
 // D = Day, . = wildcard (can be filled with other symbols), EUR = symbol, 
 // SP00 = ECB foreign exchange reference rates – code, A = time variation
