@@ -11,25 +11,12 @@ describe("getEurRates", () => {
     // date = 2023-10-18
 
     // host.docker.internal <-> localhost (or 127.0.0.1) outside of devcontainer
+    // use mockoon with data provided in ./mockoonTestData.json
     const response = await fetch("http://host.docker.internal:3005/ECB/service/data/EUR");
-    const data:ExchangeRateData = await response.json();
+    const mockdata:ExchangeRateData = await response.json();
  
-    let eurRates: ExchangeRateDict = {};
+    let eurRates: ExchangeRateDict = await exrService.exchangeRateDictBuilderECB(mockdata);
 
-    for (let i = 0; i < Object.keys(data.dataSets[0].series).length; i++) {
-      for (let j = 0; j < Object.keys(data.dataSets[0].series[`0:${i}:0:0:0`].observations).length; j++) {
-        let eurRate: ExchangeRate =
-        {
-          symbol: data.structure.dimensions.series[1].values[i].id,
-          rate: data.dataSets[0].series[`0:${i}:0:0:0`].observations[j][0]
-        }
-        if (eurRates[data.structure.dimensions.observation[0].values[j].id] !== undefined) {
-          eurRates[data.structure.dimensions.observation[0].values[j].id].push(eurRate);
-        } else {
-          eurRates[data.structure.dimensions.observation[0].values[j].id] = [eurRate]
-        }
-      }
-    }
     expect(eurRates).toEqual({
       '2023-10-16': [
         { symbol: 'AUD', rate: 1.666 },
