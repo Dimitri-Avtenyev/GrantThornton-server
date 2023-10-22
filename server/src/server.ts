@@ -4,9 +4,6 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import fileHandleRoute from "./routes/fileHandler.route";
-// demo test rates
-import exchangeRateService from "./services/exr.service";
-import { connectionString } from "./db";
 import datastorageService from "./services/datastorage.service";
 
 const app = express();
@@ -26,12 +23,9 @@ app.use("/uploadfile", fileHandleRoute);
 
 
 app.listen(app.get("port"), async () => {
-  // demo test rates on start
-  //let rates = await exchangeRateService.getEurRates(new Date("2023-10-20"), "2023-10-20");
-  //await datastorageService.saveDbData(rates);
-  //await datastorageService.getLocalData(new Date("2023-10-20"));
+  // start auto get and store rates every 24h
+  await datastorageService.autoGetAndStoreRates(86400000);
   
-  connectionString("mongodb+srv://<username>:<password>@cluster0.b4g2p.mongodb.net/?retryWrites=true&w=majority")
   const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
   console.log(`---/ server started at port: ${app.get("port")} \\---`);
   console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);
