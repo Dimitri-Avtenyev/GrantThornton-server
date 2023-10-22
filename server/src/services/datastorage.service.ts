@@ -2,12 +2,13 @@ import { writeFile } from "fs";
 import { dbClient } from "../db";
 import { ExchangeRate, ExchangeRateDict } from "../types";
 import fs from "fs/promises";
+import exrService from "./exr.service";
 
 const getDbData = async (date?: Date): Promise<ExchangeRateDict | null> => {
   let _data: ExchangeRateDict | null = null;
   try {
     await dbClient.connect();
-    let query: string | undefined =  date?.toISOString().split("T")[0];
+    let query: string | undefined = date?.toISOString().split("T")[0];
     // let document:ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({ '2023-10-18': { $type: 'array' }});
     // if (document) {
     //   console.log(document['2023-10-18'].find(x => x.symbol === "AUD")?.symbol);
@@ -32,15 +33,15 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
     //let key:string = Object.keys(rates)[0];
     // check if collection is empty
     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
-    
+
     // check empty collection
     if (collectionCount === 0) {
       //data insertion for dict with multiple days of data
       // convert dict into chuncks of own objects
       if (Object.keys(rates).length > 1) {
-        const arrRates:ExchangeRateDict[] = [];
+        const arrRates: ExchangeRateDict[] = [];
         for (let [key, value] of Object.entries(rates)) {
-          let eurRate:ExchangeRateDict = {
+          let eurRate: ExchangeRateDict = {
             [key]: value
           }
           arrRates.push(eurRate);
@@ -50,13 +51,13 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
         //data insertion for dict with one day of data
         await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertOne(rates);
       }
-      
+
     } else {
       // if collection is filled -> only add one by one
       let key = Object.keys(rates)[0]; //  date in ISO format
 
-      let duplicate:ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!)
-        .findOne<ExchangeRateDict>({ [key]: { $exists: true }});
+      let duplicate: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!)
+        .findOne<ExchangeRateDict>({ [key]: { $exists: true } });
       if (duplicate) {
         console.log(`Document with date: ${key} already exist.`);
         return;
@@ -75,13 +76,13 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
 }
 
 const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
-  let _data: ExchangeRateDict|null = null;
-  let query: string | undefined =  date?.toISOString().split("T")[0];
+  let _data: ExchangeRateDict | null = null;
+  let query: string | undefined = date?.toISOString().split("T")[0];
 
   const files: string[] = await fs.readdir("./src/localData");
   // load, if exists, document locally
   try {
-    let localData = await fs.readFile("./src/localData/"+files[0], "utf-8");
+    let localData = await fs.readFile("./src/localData/" + files[0], "utf-8");
     if (!localData) {
       console.log("No data present or no such file");
     }
@@ -89,25 +90,60 @@ const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
   } catch (err) {
     console.log(err);
   }
- if(!_data || !_data[query]) {
-  return [];
- } 
+  if (!_data || !_data[query]) {
+    return [];
+  }
 
   return _data[query];
 }
 
-const saveLocalData = async (rates:ExchangeRateDict): Promise<void> => {
+const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
+  //todo add max collection -> ~250 entries -> overwrite most old entry
   const files: string[] = await fs.readdir("./src/localData");
-// todo conditions add single data to existing file
-  if(files[0] !== "eurRates.json") {
-    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates), "utf-8");
-  } 
-  
+  if (files[0] !== "eurRates.json") {
+    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates, null, 2), "utf-8"); //"null and 2 for formatting"
+  }
+  let data: string = await fs.readFile(`./src/localData/${files[0]}`, "utf-8");
+  let eurRatesJson: ExchangeRateDict = JSON.parse(data);
+
+// multiple keys (as ISO date) -> add to existing json
+  if (Object.keys(rates).length > 1) {
+    for (let [key, value] of Object.entries(rates)) {
+      eurRatesJson[key] = value;
+    }
+  } else {
+// single key (as ISO date) -> add to existing json
+    let keyDate:string = Object.keys(rates)[0];
+    eurRatesJson[keyDate] = rates[keyDate];  
+  }
+
+
+  await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(eurRatesJson, null, 2), "utf-8" );
+  console.log(`file updated in ./src/localData/eurRates.json`);
+
 }
 
+const GetAndStoreRates = async () => {
+  const today: Date = new Date();
+  const dayBefore: Date = new Date(today);
+  dayBefore.setDate(today.getDate() - 1);
+
+  const rates: ExchangeRateDict = await exrService.getEurRates(dayBefore);
+  Promise.all([saveDbData(rates), saveLocalData(rates)])
+}
+
+const autoGetAndStoreRates = (time: number) => {
+  if (10 > time || time > 86400000) {
+    console.log(`${time} is invalid, auto setting to 86400000ms (24h)`);
+    time = 86400000;
+  }
+  setInterval(GetAndStoreRates, time);
+}
 export default {
   getDbData,
   saveDbData,
   getLocalData,
-  saveLocalData
+  saveLocalData,
+  GetAndStoreRates,
+  autoGetAndStoreRates
 }

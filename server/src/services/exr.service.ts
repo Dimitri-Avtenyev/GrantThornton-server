@@ -14,15 +14,12 @@ import { ExchangeRate, ExchangeRateData, ExchangeRateDict } from "../types";
 const entryPoint: string = "https://data-api.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A";
 
 const getEurRates = async (date: Date, endPeriod?: string, format: string = "jsondata"): Promise<ExchangeRateDict> => {
+  date = weekdayCheckAndAdjust(date);
   if (!endPeriod) {
-    let today: Date = new Date();
-    today.setDate((today.getDate() - 1));
-    endPeriod = today.toISOString().split("T")[0];
+    endPeriod = date.toISOString().split("T")[0];
+    console.log(endPeriod);
   }
 
-  if (!atLeastOneDayOlder(date)) {
-    console.log("Date should be at least one day in the past");
-  }
   let startPediod = date.toISOString().split("T")[0];
   const response = await fetch(`${entryPoint}?startPeriod=${startPediod}&endPeriod=${endPeriod}&format=${format}&detail=dataonly`);
   const data: ExchangeRateData = await response.json();
@@ -36,7 +33,7 @@ const getEurRates = async (date: Date, endPeriod?: string, format: string = "jso
 
 //--- data retrieval from "exchangeratesapi" ---///
 //   todo
-// --- ---///
+// ---                                      ---///
 
 const exchangeRateDictBuilderECB = async (data: ExchangeRateData): Promise<ExchangeRateDict> => {
   let eurRates: ExchangeRateDict = {};
@@ -64,7 +61,17 @@ const atLeastOneDayOlder = (date: Date): boolean => {
 
   return timeDiff > DAY_IN_MILLISECONDS;
 }
-
+const weekdayCheckAndAdjust = (date: Date): Date => {
+  const dayOfWeek: number = date.getDay();
+  if (dayOfWeek === 0) { // sunday -> substract one day
+    console.log(`${date} is on sunday, adjusting...`);
+    date.setDate(date.getDate() - 2);
+  } else if (dayOfWeek === 6) { // saturdat -> substract two days
+    console.log(`${date} is on saturday, adjusting...`)
+    date.setDate(date.getDate() - 1);
+  }
+  return date;
+}
 export default {
   getEurRates,
   exchangeRateDictBuilderECB,
