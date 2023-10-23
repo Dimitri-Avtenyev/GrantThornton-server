@@ -4,26 +4,25 @@ import { ExchangeRate, ExchangeRateDict } from "../types";
 import fs from "fs/promises";
 import exrService from "./exr.service";
 
-const getDbData = async (date?: Date): Promise<ExchangeRateDict | null> => {
-  let _data: ExchangeRateDict | null = null;
+const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
+  let _data: ExchangeRateDict = {};
+  let query: string = date.toISOString().split("T")[0];
   try {
     await dbClient.connect();
-    let query: string | undefined = date?.toISOString().split("T")[0];
-    // let document:ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({ '2023-10-18': { $type: 'array' }});
-    // if (document) {
-    //   console.log(document['2023-10-18'].find(x => x.symbol === "AUD")?.symbol);
-    // }
-    let data: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({ query });
+
+    
+    let data: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({[query]: {$exists:true}});
     if (!data) {
       console.log(`No data has been found with for: ${query}`);
+    } else {
+      _data = data
     }
-    _data = data;
   } catch (err) {
     console.log(err);
   } finally {
     await dbClient.close();
   }
-  return _data
+  return _data[query]
 }
 
 const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
@@ -76,7 +75,7 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
 }
 
 const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
-  let _data: ExchangeRateDict | null = null;
+  let _data: ExchangeRateDict  = {};
   let query: string | undefined = date?.toISOString().split("T")[0];
 
   const files: string[] = await fs.readdir("./src/localData");
