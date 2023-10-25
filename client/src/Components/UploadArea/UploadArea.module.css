@@ -14,44 +14,27 @@
     text-align: center;
 }
 
-.uploadArea form p {
-    margin-top: 65px;
+.Button {
+    padding: 15px;
+    margin: 30px;
 }
 
 .convertButton {
-    margin: auto;
-    width: 30%;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.uploadArea ul {
-    border: 1px solid green;
-}
-
-li {
-    list-style-type: none;
+    margin: 30px;
 }
 
 .fileList {
     display: flex;
-    flex-direction: row;
     justify-content: center;
 }
 
-.fileList li {
+.listItemText {
     padding: 5px;
-    margin: 5px;
-    font-weight: bold;
 }
 
-.fileList button {
-    padding: 5px;
-    margin: 5px;
-    border-radius: 50px;
-    border-width: 3px;
-    width: 30px;
-    
+.listItem {
+    width: 30%;
+    border: 1px solid green;
 }
 
 

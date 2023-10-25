@@ -1,7 +1,13 @@
 import React, {useState, useCallback} from 'react'
 import {FileRejection, useDropzone} from 'react-dropzone'
 import styles from "./UploadArea.module.css";
-import { listenerCount } from 'process';
+import Button from "@mui/material/Button"
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ArticleIcon from '@mui/icons-material/Article';
+import { ListItemText } from '@mui/material';
 
 
 const UploadArea = () => {
@@ -56,23 +62,24 @@ const UploadArea = () => {
                 <input {...getInputProps()} />
                 {
                     isDragActive ?
-                    <p>Drop the files here ...</p> :
-                    <p>Drag and drop your files here, or click to select files</p>
+                    <Button className={styles.Button} component="label" variant="contained">Drop the files here ...</Button> :
+                    <Button className={styles.Button} component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                        Upload files
+                    </Button>
                 }
                 </div>
-                <button type="submit" className={styles.convertButton}>Convert</button>
+                <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
             </form>
 
-            <ul>
+            <List className={styles.fileList}>
                 {files.map((file) => (
-                    <div key={file.name} className={styles.fileList}>
-                        <li>
-                            {file.name}
-                        </li>
-                        <button onClick={() => removeFile(file.name)}>X</button>
-                    </div>
+                    <ListItem className={styles.listItem} key={file.name}>
+                        <ArticleIcon ></ArticleIcon>
+                        <ListItemText className={styles.listItemText}>{file.name}</ListItemText>
+                        <DeleteIcon onClick={() => removeFile(file.name)}>X</DeleteIcon>
+                    </ListItem>
                 ))}
-            </ul>
+            </List>
 
             {/*CODE TO SHOW ERRORS*/}
             {/* <ul> 
