@@ -1,6 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import {FileRejection, useDropzone} from 'react-dropzone'
 import styles from "./UploadArea.module.css";
+import { listenerCount } from 'process';
 
 
 const UploadArea = () => {
@@ -39,11 +40,11 @@ const UploadArea = () => {
         const formData = new FormData();
         files.forEach(file => formData.append("file", file));
 
-        const URL = ""; //Moet process.env.URL worden
+        const URL = "http://localhost:3000/uploadfile"; //Moet process.env.URL worden
         const data = await fetch(URL, {
             method: "POST",
             body: formData
-        }).then(res => res.json());
+        });
 
         console.log(data);
     }
@@ -59,14 +60,13 @@ const UploadArea = () => {
                     <p>Drag and drop your files here, or click to select files</p>
                 }
                 </div>
+                <button type="submit" className={styles.convertButton}>Convert</button>
             </form>
 
-            <button className={styles.convertButton}>Convert</button>
-
             <ul>
-                {files.map(file => (
-                    <div className={styles.fileList}>
-                        <li key={file.name}>
+                {files.map((file) => (
+                    <div key={file.name} className={styles.fileList}>
+                        <li>
                             {file.name}
                         </li>
                         <button onClick={() => removeFile(file.name)}>X</button>

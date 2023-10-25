@@ -1,11 +1,13 @@
 import React from 'react';
 import './App.css';
-import UploadArea from './Components/UploadArea/UploadArea';
+import Header from './Components/Header/Header'
+import Uploadpage from './Components/Uploadpage/Uploadpage';
 
 function App() {
   return (
     <div className="App">
-      <UploadArea/>
+      <Header/>
+      <Uploadpage/>
     </div>
   );
 }

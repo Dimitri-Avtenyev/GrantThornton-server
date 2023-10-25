@@ -5,6 +5,7 @@
     margin-top: 250px;
     display: flex;
     flex-direction: column;
+    background-color: white;
 }
 
 .uploadArea form {
