@@ -17,3 +17,15 @@ export const connectionString = (uri:string) => {
 
 connectionString(uri)
 export const dbClient = new MongoClient(connectionString(uri));
+
+
+
+
+// populate db 
+export const populateDB = async() => {
+
+}
+
+export const populateLocalDB = async() => {
+  
+}

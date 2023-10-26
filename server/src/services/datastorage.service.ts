@@ -1,4 +1,3 @@
-import { writeFile } from "fs";
 import { dbClient } from "../db";
 import { ExchangeRate, ExchangeRateDict } from "../types";
 import fs from "fs/promises";
@@ -10,7 +9,6 @@ const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
   try {
     await dbClient.connect();
 
-    
     let data: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({[query]: {$exists:true}});
     if (!data) {
       console.log(`No data has been found with for: ${query}`);
@@ -100,7 +98,7 @@ const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
   //todo add max collection -> ~250 entries -> overwrite most old entry
   const files: string[] = await fs.readdir("./src/localData");
   if (files[0] !== "eurRates.json") {
-    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates, null, 2), "utf-8"); //"null and 2 for formatting"
+    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates), "utf-8"); 
   }
   let data: string = await fs.readFile(`./src/localData/${files[0]}`, "utf-8");
   let eurRatesJson: ExchangeRateDict = JSON.parse(data);
