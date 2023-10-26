@@ -115,7 +115,7 @@ const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
   }
 
 
-  await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(eurRatesJson, null, 2), "utf-8" );
+  await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(eurRatesJson), "utf-8" );
   console.log(`file updated in ./src/localData/eurRates.json`);
 
 }

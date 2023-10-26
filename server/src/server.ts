@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import fileHandleRoute from "./routes/fileHandler.route";
 import datastorageService from "./services/datastorage.service";
+import exrService from "./services/exr.service";
 
 const app = express();
 
@@ -24,7 +25,10 @@ app.use("/uploadfile", fileHandleRoute);
 app.listen(app.get("port"), async () => {
   // start auto get and store rates every 24h
   await datastorageService.autoGetAndStoreRates(86400000);
+  let today:Date = new Date();
+  let rates = await exrService.getEurRates(today);
   
+  await datastorageService.saveLocalData(rates);
   const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
   console.log(`---/ server started at port: ${app.get("port")} \\---`);
   console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);

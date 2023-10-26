@@ -17,23 +17,19 @@ const getEurRates = async (date: Date, endPeriod?: string, format: string = "jso
   date = weekdayCheckAndAdjust(date);
   if (!endPeriod) {
     endPeriod = date.toISOString().split("T")[0];
-    console.log(endPeriod);
   }
 
   let startPediod = date.toISOString().split("T")[0];
+  console.log(startPediod);
+  console.log(endPeriod);
   const response = await fetch(`${entryPoint}?startPeriod=${startPediod}&endPeriod=${endPeriod}&format=${format}&detail=dataonly`);
   const data: ExchangeRateData = await response.json();
-
   // dict builder
   let eurRates: ExchangeRateDict = await exchangeRateDictBuilderECB(data);
 
   return eurRates;
 }
 
-
-//--- data retrieval from "exchangeratesapi" ---///
-//   todo
-// ---                                      ---///
 
 const exchangeRateDictBuilderECB = async (data: ExchangeRateData): Promise<ExchangeRateDict> => {
   let eurRates: ExchangeRateDict = {};
@@ -54,6 +50,15 @@ const exchangeRateDictBuilderECB = async (data: ExchangeRateData): Promise<Excha
   }
   return eurRates;
 }
+
+
+
+//--- data retrieval from "exchangeratesapi" ---///
+//   todo?
+// ---                                      ---///
+
+
+
 const atLeastOneDayOlder = (date: Date): boolean => {
   const today: Date = new Date();
   const timeDiff = today.getTime() - date.getTime();
@@ -63,17 +68,23 @@ const atLeastOneDayOlder = (date: Date): boolean => {
 }
 const weekdayCheckAndAdjust = (date: Date): Date => {
   const dayOfWeek: number = date.getDay();
+  if(!atLeastOneDayOlder(date)) {
+    console.log(`${date} is too recent(needs to be at least one day older), no data yet, adjusting...`)
+    date.setDate(date.getDate() - 1);
+  }
   if (dayOfWeek === 0) { // sunday -> substract one day
     console.log(`${date} is on sunday, adjusting...`);
     date.setDate(date.getDate() - 2);
   } else if (dayOfWeek === 6) { // saturdat -> substract two days
     console.log(`${date} is on saturday, adjusting...`)
     date.setDate(date.getDate() - 1);
-  }
+  } 
+  
   return date;
 }
 export default {
   getEurRates,
   exchangeRateDictBuilderECB,
-  atLeastOneDayOlder
+  atLeastOneDayOlder,
+  weekdayCheckAndAdjust
 }

@@ -139,3 +139,37 @@ describe("atLeastOneDayOlder", () => {
   });
 });
 
+describe("weekdayCheckAndAdjust", () => {
+  interface TestCases {
+    input: Date;
+    expected: Date
+  }
+  it("should return dates one day before if it's saturday", () => {
+
+    const testSaturdayCases:TestCases[] = [
+      {input: new Date("2023-10-07"), expected:new Date("2023-10-06")},
+      {input: new Date("2023-10-14"), expected:new Date("2023-10-13")},
+      {input: new Date("2023-10-21"), expected:new Date("2023-10-20")}
+    ];
+
+    testSaturdayCases.forEach((testCase:TestCases) => {
+      const result = exrService.weekdayCheckAndAdjust(testCase.input);
+      expect(result).toStrictEqual(testCase.expected);
+    });
+  });
+
+  it("should return dates two days before if it's sunday", () => {
+
+    const testSaturdayCases:TestCases[] = [
+      {input: new Date("2023-10-08"), expected:new Date("2023-10-06")},
+      {input: new Date("2023-10-15"), expected:new Date("2023-10-13")},
+      {input: new Date("2023-10-22"), expected:new Date("2023-10-20")}
+    ];
+
+    testSaturdayCases.forEach((testCase:TestCases) => {
+      const result = exrService.weekdayCheckAndAdjust(testCase.input);
+      expect(result).toStrictEqual(testCase.expected);
+    });
+  })
+})
+
