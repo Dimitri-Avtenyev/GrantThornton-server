@@ -6,7 +6,7 @@ import cors from "cors";
 import fileHandleRoute from "./routes/fileHandler.route";
 import datastorageService from "./services/datastorage.service";
 import exrService from "./services/exr.service";
-import { populateLocalDB } from "./db";
+import { populateDB, populateLocalDB } from "./db";
 
 const app = express();
 
@@ -27,7 +27,8 @@ app.listen(app.get("port"), async () => {
   // start auto get and store rates every 24h
   await datastorageService.autoGetAndStoreRates(86400000);
   // populate DB for 1 year of data
-  await populateLocalDB();
+  await Promise.all([ populateLocalDB(), populateDB()]);
+
   const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
   console.log(`---/ server started at port: ${app.get("port")} \\---`);
   console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);
