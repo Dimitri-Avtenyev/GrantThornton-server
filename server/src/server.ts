@@ -5,7 +5,6 @@ import express from "express";
 import cors from "cors";
 import fileHandleRoute from "./routes/fileHandler.route";
 import datastorageService from "./services/datastorage.service";
-import exrService from "./services/exr.service";
 import { populateDB, populateLocalDB } from "./db";
 
 const app = express();
