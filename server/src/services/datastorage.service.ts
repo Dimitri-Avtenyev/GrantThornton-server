@@ -98,7 +98,8 @@ const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
   //todo add max collection -> ~250 entries -> overwrite most old entry
   const files: string[] = await fs.readdir("./src/localData");
   if (files[0] !== "eurRates.json") {
-    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates), "utf-8"); 
+    await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(rates), "utf-8");
+    return console.log("file saved in ./src/localData/"); 
   }
   let data: string = await fs.readFile(`./src/localData/${files[0]}`, "utf-8");
   let eurRatesJson: ExchangeRateDict = JSON.parse(data);
@@ -116,7 +117,7 @@ const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
 
 
   await fs.writeFile("./src/localData/eurRates.json", JSON.stringify(eurRatesJson), "utf-8" );
-  console.log(`file updated in ./src/localData/eurRates.json`);
+  console.log(`file '${files[0]}' updated in ./src/localData`);
 
 }
 
@@ -129,7 +130,7 @@ const GetAndStoreRates = async () => {
   Promise.all([saveDbData(rates), saveLocalData(rates)])
 }
 
-const autoGetAndStoreRates = (time: number) => {
+const autoGetAndStoreRates = async (time: number) => {
   if (10 > time || time > 86400000) {
     console.log(`${time} is invalid, auto setting to 86400000ms (24h)`);
     time = 86400000;
