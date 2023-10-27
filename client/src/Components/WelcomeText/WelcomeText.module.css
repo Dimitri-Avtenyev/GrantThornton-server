@@ -1,0 +1,14 @@
+.welcomeContainer {
+    background-color: rgb(88,86,214);
+    color: white;
+    border-radius: 5px;
+    width: 750px;
+    margin-top: 75px;
+}
+
+.line {
+    background-color: white;
+    border-radius: 5px;
+    width: 33%;
+    height: 2px;
+}
