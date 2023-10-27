@@ -1,41 +1,62 @@
 .uploadArea {
-    border: 1px solid black;
-    width: 75%;
-    margin: auto;
-    margin-top: 250px;
+    height: 65vh;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    justify-content: center;
+    align-items: center;
 }
 
 .uploadArea form {
-    border: 1px solid red;
-    height: 150px;
-    text-align: center;
+    width: 550px;
+    margin-top: 35px;
 }
 
-.Button {
-    padding: 15px;
-    margin: 30px;
+.uploadButton {
+    width: 550px;
+    height: 200px;
+    background-color: white;
+    color: rgb(88,86,214);
+}
+
+.uploadButton:hover {
+    background-color: white;
+    color: rgb(88,86,214);
 }
 
 .convertButton {
+    background-color: rgb(88,86,214);
     margin: 30px;
 }
 
-.fileList {
-    display: flex;
-    justify-content: center;
+.convertButton:hover {
+    background-color: rgb(88,86,214);
+}
+
+.listContainer {
+    overflow: auto;
+}
+
+.articleIcon {
+    color: rgb(31,112,68);
 }
 
 .listItemText {
-    padding: 5px;
+    padding: 0px 35px 0px 10px;
 }
 
-.listItem {
-    width: 30%;
-    border: 1px solid green;
+.deleteIcon {
+    color: rgb(159, 6, 6);
 }
+
+.deleteIcon:hover {
+    cursor: pointer;
+}
+
+.errorMessage {
+    margin-left: 10px;
+    color: rgb(159, 6, 6);
+}
+
 
 
 

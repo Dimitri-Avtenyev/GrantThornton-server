@@ -8,6 +8,13 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ArticleIcon from '@mui/icons-material/Article';
 import { ListItemText } from '@mui/material';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+
+const cache = createCache({
+    key: "css",
+    prepend: true
+})
 
 
 const UploadArea = () => {
@@ -56,47 +63,48 @@ const UploadArea = () => {
     }
 
     return (
-        <div className={styles.uploadArea}>
-            <form onSubmit={handleSubmit}>
-                <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                {
-                    isDragActive ?
-                    <Button className={styles.Button} component="label" variant="contained">Drop the files here ...</Button> :
-                    <Button className={styles.Button} component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-                        Upload files
-                    </Button>
-                }
-                </div>
-                <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
-            </form>
-
-            <List className={styles.fileList}>
-                {files.map((file) => (
-                    <ListItem className={styles.listItem} key={file.name}>
-                        <ArticleIcon ></ArticleIcon>
-                        <ListItemText className={styles.listItemText}>{file.name}</ListItemText>
-                        <DeleteIcon onClick={() => removeFile(file.name)}>X</DeleteIcon>
-                    </ListItem>
-                ))}
-            </List>
-
-            {/*CODE TO SHOW ERRORS*/}
-            {/* <ul> 
-                {rejected.map(({file, errors}) => (
-                    <div>
-                        <li key={file.name}>{file.name}</li>
-                        <ul>
-                            {errors.map(error => (
-                                <p key={error.code}>File must be Excel File</p>
-                            ))}
-                        </ul>
-                        <button onClick={() => removeRejected(file.name)}>Remove</button>
+        <CacheProvider value={cache}>
+            <div className={styles.uploadArea}>
+                <form onSubmit={handleSubmit}>
+                    <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {
+                        isDragActive ?
+                        <Button className={styles.uploadButton} component="label" variant="contained">Drop the files here ...</Button> :
+                        <Button className={styles.uploadButton} component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                            Upload files
+                        </Button>
+                    }
                     </div>
-                    
-                ))}
-            </ul> */}
-        </div>
+                    <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
+                </form>
+                <div className={styles.listContainer}>
+                    <List className={styles.fileList}>
+                        {files.map((file) => (
+                            <ListItem className={styles.listItem} key={file.name}>
+                                <ArticleIcon className={styles.articleIcon}></ArticleIcon>
+                                <ListItemText className={styles.listItemText}>{file.name}</ListItemText>
+                                <DeleteIcon className={styles.deleteIcon} onClick={() => removeFile(file.name)}>X</DeleteIcon>
+                            </ListItem>
+                        ))}
+                    </List>
+
+                    <List> 
+                        {rejected.map(({file, errors}) => (
+                            <ListItem key={file.name}>
+                                <ListItemText>{file.name}</ListItemText>
+                                <List>
+                                    {errors.map(error => (
+                                        <ListItemText className={styles.errorMessage} key={error.code}>File must be an Excel File!</ListItemText>
+                                    ))}
+                                </List>
+                            </ListItem>
+                            
+                        ))}
+                    </List>
+                </div>
+            </div>
+        </CacheProvider>
     )
 }
 
