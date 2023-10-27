@@ -1,58 +1,62 @@
 .uploadArea {
-    border: 1px solid black;
-    width: 75%;
-    margin: auto;
-    margin-top: 250px;
+    height: 65vh;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    justify-content: center;
+    align-items: center;
 }
 
 .uploadArea form {
-    border: 1px solid red;
-    height: 150px;
-    text-align: center;
+    width: 550px;
+    margin-top: 35px;
 }
 
-.uploadArea form p {
-    margin-top: 65px;
+.uploadButton {
+    width: 550px;
+    height: 200px;
+    background-color: white;
+    color: rgb(88,86,214);
+}
+
+.uploadButton:hover {
+    background-color: white;
+    color: rgb(88,86,214);
 }
 
 .convertButton {
-    margin: auto;
-    width: 30%;
-    font-weight: bold;
-    text-transform: uppercase;
+    background-color: rgb(88,86,214);
+    margin: 30px;
 }
 
-.uploadArea ul {
-    border: 1px solid green;
+.convertButton:hover {
+    background-color: rgb(88,86,214);
 }
 
-li {
-    list-style-type: none;
+.listContainer {
+    overflow: auto;
 }
 
-.fileList {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+.articleIcon {
+    color: rgb(31,112,68);
 }
 
-.fileList li {
-    padding: 5px;
-    margin: 5px;
-    font-weight: bold;
+.listItemText {
+    padding: 0px 35px 0px 10px;
 }
 
-.fileList button {
-    padding: 5px;
-    margin: 5px;
-    border-radius: 50px;
-    border-width: 3px;
-    width: 30px;
-    
+.deleteIcon {
+    color: rgb(159, 6, 6);
 }
+
+.deleteIcon:hover {
+    cursor: pointer;
+}
+
+.errorMessage {
+    margin-left: 10px;
+    color: rgb(159, 6, 6);
+}
+
 
 
 

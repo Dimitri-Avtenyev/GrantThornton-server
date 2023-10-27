@@ -1,6 +1,20 @@
 import React, {useState, useCallback} from 'react'
 import {FileRejection, useDropzone} from 'react-dropzone'
 import styles from "./UploadArea.module.css";
+import Button from "@mui/material/Button"
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ArticleIcon from '@mui/icons-material/Article';
+import { ListItemText } from '@mui/material';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+
+const cache = createCache({
+    key: "css",
+    prepend: true
+})
 
 
 const UploadArea = () => {
@@ -39,57 +53,58 @@ const UploadArea = () => {
         const formData = new FormData();
         files.forEach(file => formData.append("file", file));
 
-        const URL = ""; //Moet process.env.URL worden
+        const URL = "http://localhost:3000/uploadfile"; //Moet process.env.URL worden
         const data = await fetch(URL, {
             method: "POST",
             body: formData
-        }).then(res => res.json());
+        });
 
         console.log(data);
     }
 
     return (
-        <div className={styles.uploadArea}>
-            <form onSubmit={handleSubmit}>
-                <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                {
-                    isDragActive ?
-                    <p>Drop the files here ...</p> :
-                    <p>Drag and drop your files here, or click to select files</p>
-                }
+        <CacheProvider value={cache}>
+            <div className={styles.uploadArea}>
+                <form onSubmit={handleSubmit}>
+                    <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {
+                        isDragActive ?
+                        <Button className={styles.uploadButton} component="label" variant="contained">Drop the files here ...</Button> :
+                        <Button className={styles.uploadButton} component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                            Upload files
+                        </Button>
+                    }
+                    </div>
+                    <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
+                </form>
+                <div className={styles.listContainer}>
+                    <List className={styles.fileList}>
+                        {files.map((file) => (
+                            <ListItem className={styles.listItem} key={file.name}>
+                                <ArticleIcon className={styles.articleIcon}></ArticleIcon>
+                                <ListItemText className={styles.listItemText}>{file.name}</ListItemText>
+                                <DeleteIcon className={styles.deleteIcon} onClick={() => removeFile(file.name)}>X</DeleteIcon>
+                            </ListItem>
+                        ))}
+                    </List>
+
+                    <List> 
+                        {rejected.map(({file, errors}) => (
+                            <ListItem key={file.name}>
+                                <ListItemText>{file.name}</ListItemText>
+                                <List>
+                                    {errors.map(error => (
+                                        <ListItemText className={styles.errorMessage} key={error.code}>File must be an Excel File!</ListItemText>
+                                    ))}
+                                </List>
+                            </ListItem>
+                            
+                        ))}
+                    </List>
                 </div>
-            </form>
-
-            <button className={styles.convertButton}>Convert</button>
-
-            <ul>
-                {files.map(file => (
-                    <div className={styles.fileList}>
-                        <li key={file.name}>
-                            {file.name}
-                        </li>
-                        <button onClick={() => removeFile(file.name)}>X</button>
-                    </div>
-                ))}
-            </ul>
-
-            {/*CODE TO SHOW ERRORS*/}
-            {/* <ul> 
-                {rejected.map(({file, errors}) => (
-                    <div>
-                        <li key={file.name}>{file.name}</li>
-                        <ul>
-                            {errors.map(error => (
-                                <p key={error.code}>File must be Excel File</p>
-                            ))}
-                        </ul>
-                        <button onClick={() => removeRejected(file.name)}>Remove</button>
-                    </div>
-                    
-                ))}
-            </ul> */}
-        </div>
+            </div>
+        </CacheProvider>
     )
 }
 

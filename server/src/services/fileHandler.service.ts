@@ -1,6 +1,7 @@
 import ExcelJs from "exceljs";
 import fs from "fs";
 import path from "path";
+import checkValuta from "./checkValuta";
 
 const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
@@ -21,6 +22,8 @@ const main = async (workbook: ExcelJs.Workbook) => {
   workbook.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
     .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
 
+
+  checkValuta.findValuta(workbook);
 
   // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
@@ -48,6 +51,8 @@ const checkFileExt = async (fileName:string):Promise<boolean> => {
     throw new Error("File extension not allowed");
   }
   return allowedFileExtension === fileExtension;
+
+
 }
 
 export default {
