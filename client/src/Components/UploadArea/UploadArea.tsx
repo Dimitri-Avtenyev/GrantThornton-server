@@ -10,6 +10,8 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { ListItemText } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
+import Box from "@mui/material/Box";
+
 
 const cache = createCache({
     key: "css",
@@ -61,9 +63,13 @@ const UploadArea = () => {
 
         console.log(data);
     }
+     const boxDefault ={
+        height: 100,
+     }
 
     return (
         <CacheProvider value={cache}>
+            
             <div className={styles.uploadArea}>
                 <form onSubmit={handleSubmit}>
                     <div {...getRootProps()}>
@@ -76,7 +82,14 @@ const UploadArea = () => {
                         </Button>
                     }
                     </div>
-                    <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        sx={boxDefault}
+                    >
+                        <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
+                    </Box>
                 </form>
                 <div className={styles.listContainer}>
                     <List className={styles.fileList}>
@@ -104,6 +117,7 @@ const UploadArea = () => {
                     </List>
                 </div>
             </div>
+            
         </CacheProvider>
     )
 }
