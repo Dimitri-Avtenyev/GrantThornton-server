@@ -1,8 +1,12 @@
 .footer{
     background-color: rgb(199,199,241);
     padding-top:2%;
-    padding-bottom: 5%;
+    padding-bottom: 2%;
     display: flex;
+    justify-content: space-between;
+    padding-right: 5rem;
+    padding-left: 5rem;
+    
 }
 .logoR{
     height: 50px;
@@ -10,15 +14,26 @@
 p{
     margin-left: 2%;
 }
-.containerHelpdesk{
+.containerFooter{
     display: flex;
     flex-direction: column;
     text-align: center;
 }
 .line{
     border:solid;
-    width: 50%;
+    width: 80%;
     color: white;
     align-self: center;
     border-width: 2px;
+}
+.line2{
+    border:solid;
+    width: 80%;
+    color: white;
+    align-self: center;
+    border-width: 2px;
+}
+.socials img{
+    margin: 15px;
+    width: 3rem;
 }
