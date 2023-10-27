@@ -1,0 +1,24 @@
+.footer{
+    background-color: rgb(199,199,241);
+    padding-top:2%;
+    padding-bottom: 5%;
+    display: flex;
+}
+.logoR{
+    height: 50px;
+}
+p{
+    margin-left: 2%;
+}
+.containerHelpdesk{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.line{
+    border:solid;
+    width: 50%;
+    color: white;
+    align-self: center;
+    border-width: 2px;
+}
