@@ -22,6 +22,7 @@ const cache = createCache({
 const UploadArea = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [rejected, setRejected] = useState<FileRejection[]>([]);
+    const [downloadlink, setDownloadLink] = useState<string>(""); // pas je zelf aan of verwijderen, eigen flow plaatsen
 
     const onDrop = useCallback((acceptedFiles : File[], rejectedFiles : FileRejection[]) => {
         if(acceptedFiles.length) {
@@ -55,13 +56,24 @@ const UploadArea = () => {
         const formData = new FormData();
         files.forEach(file => formData.append("file", file));
 
-        const URL = "http://localhost:3000/uploadfile"; //Moet process.env.URL worden
-        const data = await fetch(URL, {
-            method: "POST",
-            body: formData
-        });
-
-        console.log(data);
+        // -> send and receive xslx file as response <-
+        // hier is ineens een "guideline" voor file als response
+         // -> ---------------- receive file as res --------------------- <-
+        try {
+            const ENDPOINT = "http://localhost:3000/uploadfile"; //Moet process.env.URL worden
+            const response = await fetch(ENDPOINT, {
+                method: "POST",
+                body: formData
+            });
+            if (response.status === 200) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                setDownloadLink(url);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+        // -> ---------------- receive file as res --------------------- <-
     }
      const boxDefault ={
         height: 100,
@@ -115,6 +127,9 @@ const UploadArea = () => {
                             
                         ))}
                     </List>
+                </div>
+                <div>
+                    <a href={downloadlink} download={"demoProcessedFile.xlsx"}>download file</a>
                 </div>
             </div>
             
