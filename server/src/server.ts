@@ -17,7 +17,7 @@ app.use(cors( {
   credentials: true
 }));
 
-app.set("port", process.env.PORT || 3005);
+app.set("port", process.env.PORT || 3000);
 // router middleware
 app.use("/uploadfile", fileHandleRoute);
 
