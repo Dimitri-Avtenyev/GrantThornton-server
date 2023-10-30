@@ -3,7 +3,9 @@ import {FileRejection, useDropzone} from 'react-dropzone'
 import styles from "./UploadArea.module.css";
 import Button from "@mui/material/Button"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Link from "@mui/material/Link";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -44,9 +46,10 @@ const UploadArea = () => {
         setFiles(files => files.filter(file => file.name !== name));
     }
 
-    const removeRejected = (name : string) => {
-        setRejected(files => files.filter(({file}) => file.name !== name));
-    }
+    // ----- CODE TO REMOVE REJECTED FILES -----
+    // const removeRejected = (name : string) => {
+    //     setRejected(files => files.filter(({file}) => file.name !== name));
+    // }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -73,11 +76,12 @@ const UploadArea = () => {
         } catch (err) {
             console.log(err);
         }
-        // -> ---------------- receive file as res --------------------- <-
+        // -> ---------------- receive file as res --------------------- <- 
     }
-     const boxDefault ={
+
+    const boxDefault = {
         height: 100,
-     }
+    }
 
     return (
         <CacheProvider value={cache}>
@@ -129,7 +133,10 @@ const UploadArea = () => {
                     </List>
                 </div>
                 <div>
-                    <a href={downloadlink} download={"demoProcessedFile.xlsx"}>download file</a>
+                <Button href={downloadlink} component={Link} download={"demoProcessedFile.xlsx"} variant="contained" className={styles.downloadButton}>
+                    <DownloadIcon></DownloadIcon>
+                    Download files
+                </Button>
                 </div>
             </div>
             
