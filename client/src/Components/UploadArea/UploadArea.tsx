@@ -13,6 +13,7 @@ import { ListItemText } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import Box from "@mui/material/Box";
+import WelcomeText from '../WelcomeText/WelcomeText';
 
 
 const cache = createCache({
@@ -24,7 +25,8 @@ const cache = createCache({
 const UploadArea = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [rejected, setRejected] = useState<FileRejection[]>([]);
-    const [downloadlink, setDownloadLink] = useState<string>(""); // pas je zelf aan of verwijderen, eigen flow plaatsen
+    const [downloadlink, setDownloadLink] = useState<string>("");
+    const [requestSucces, setRequestSucces] = useState<boolean>(false);
 
     const onDrop = useCallback((acceptedFiles : File[], rejectedFiles : FileRejection[]) => {
         if(acceptedFiles.length) {
@@ -72,6 +74,7 @@ const UploadArea = () => {
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
                 setDownloadLink(url);
+                setRequestSucces(true);
             }
         } catch (err) {
             console.log(err);
@@ -84,9 +87,11 @@ const UploadArea = () => {
     }
 
     return (
+        
         <CacheProvider value={cache}>
-            
+            {!requestSucces ?
             <div className={styles.uploadArea}>
+                <WelcomeText/>
                 <form onSubmit={handleSubmit}>
                     <div {...getRootProps()}>
                     <input {...getInputProps()} />
@@ -130,16 +135,20 @@ const UploadArea = () => {
                             </ListItem>
                             
                         ))}
-                    </List>
+                    </List> 
+                </div> 
+            </div>
+            :                        
+            <div className={styles.downloadArea}>
+                <div className={styles.fileCountTextContainer}>
+                    <p>Er werden X onbekende valuta gevonden. <br /> Klik op onderstaande knop om uw bestand te downloaden.</p>
                 </div>
-                <div>
                 <Button href={downloadlink} component={Link} download={"demoProcessedFile.xlsx"} variant="contained" className={styles.downloadButton}>
                     <DownloadIcon></DownloadIcon>
                     Download files
                 </Button>
-                </div>
             </div>
-            
+            }
         </CacheProvider>
     )
 }
