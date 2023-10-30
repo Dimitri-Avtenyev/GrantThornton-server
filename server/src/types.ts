@@ -7,6 +7,13 @@ export interface ExchangeRate {
   rate:   number;
 }
 
+export interface FoundValutaData {
+  location: string;  
+  valuta: string;
+  value: number;
+  date: Date;
+}
+
 export interface ExchangeRateData {
   header: {
     id: string;
