@@ -57,6 +57,13 @@
     color: rgb(159, 6, 6);
 }
 
+.downloadButton {
+    background-color: rgb(88,86,214);
+}
+.downloadButton:hover{
+    background-color: rgb(88,86,214);
+}
+
 
 
 
