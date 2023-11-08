@@ -1,5 +1,5 @@
 .uploadArea {
-    height: 65vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,6 +14,7 @@
 .uploadButton {
     width: 550px;
     height: 200px;
+    margin-top: 30px;
     background-color: white;
     color: rgb(88,86,214);
 }
@@ -55,6 +56,38 @@
 .errorMessage {
     margin-left: 10px;
     color: rgb(159, 6, 6);
+}
+
+.fileCountTextContainer {
+    background-color: rgb(88,86,214);
+    text-align: center;
+    color: white;
+    border-radius: 5px;
+    width: 500px;
+    margin-top: 75px;
+}
+
+.downloadArea {
+    height: 65vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.fileCountTextContainer {
+    height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.downloadButton {
+    margin-top: 100px;
+    width: 250px;
+    align-self: center;
+    background-color: rgb(88,86,214);
+}
+.downloadButton:hover{
+    background-color: rgb(88,86,214);
 }
 
 
