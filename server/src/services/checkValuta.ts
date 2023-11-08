@@ -5,10 +5,11 @@ import { format } from "path";
 import { log } from "console";
 
 
-//benodigdheid: vragen aan user welke sheets aangepast dienen te worden, checklist met de namen van tabbladen 
+//nbenodigdheid: vragen aan user welke sheets aangepast dienen te worden, checklist met de namen van tabbladen 
 // brainstorm voor 'Or' van prijs valuta, bv: wat als meerder kollomen met twee cijfers na de komma etc.
 // filters in callback functie steken  
 // hoofdingen dynamisch wegfilteren
+// geen valuta beteknt hoogstwaarschijjnlijk geen vreemde valuta
 
 
 const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
