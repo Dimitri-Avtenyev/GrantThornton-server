@@ -1,5 +1,0 @@
-# MongoDB config 
-MONGODB_USR=grantthornton
-MONGODB_PSW=6fkqGA6V6fhS8Csd
-MONGODB_DATABASE=GrantThornton
-MONGODB_COLLECTION=euro_rates
