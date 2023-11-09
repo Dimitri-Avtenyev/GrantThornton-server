@@ -55,7 +55,7 @@ export const populateDB = async (): Promise<boolean> => {
 
 export const populateLocalDB = async (): Promise<boolean> => {
   if (populateddDb) {
-    return false
+    return false;
   }
 
   const endPeriod: Date = new Date();

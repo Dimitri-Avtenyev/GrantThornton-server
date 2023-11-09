@@ -20,7 +20,7 @@ const main = async (workbook: ExcelJs.Workbook) => {
   firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
   await workbook.xlsx.writeFile(`${OUTPUT_DIR}/demoVreemdeValuta.xlsx`);
 
-  checkValuta.findValuta(workbook);
+  checkValuta.findValuta(workbook, 0);
 
   // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
@@ -37,7 +37,7 @@ const findFxValue = async (input: ExcelJs.Worksheet) => {
      }
     });
   }
-  console.log(`Foreign exchange symbols are found @ col ${columnLetter}`);
+  //console.log(`Foreign exchange symbols are found @ col ${columnLetter}`);
 }
 
 const checkFileExt = async (fileName:string):Promise<boolean> => {
