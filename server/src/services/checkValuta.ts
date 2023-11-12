@@ -9,7 +9,7 @@ import { log } from "console";
 // brainstorm voor 'Or' van prijs valuta, bv: wat als meerder kollomen met twee cijfers na de komma etc.
 // filters in callback functie steken  
 // hoofdingen dynamisch wegfilteren
-// geen valuta beteknt hoogstwaarschijjnlijk geen vreemde valuta
+// totalen er uit filteren
 
 
 const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
@@ -18,7 +18,7 @@ const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
 
   let foundValutaObj:FoundValutaData = {} as FoundValutaData;
   let foundValuta: FoundValutaData[] = [];
-  let buffer: string = "";
+  let cellData: string = "";
   let counter: number;
   let bufferToInt: number;
   let bufferDate: Date;
@@ -34,6 +34,7 @@ const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
 
 
 
+
 // kolommen bepalen
   for (let i = 1; i < sheet.actualColumnCount; i++) {
     sheet.getColumn(i).eachCell((c) => {
@@ -43,21 +44,27 @@ const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
       if (c.type == Exceljs.ValueType.Date) {
         dateColumnLetter = sheet.getColumn(i).letter;
       }
-      buffer = c.text;
-      let counter: number = buffer.length;
-      if (buffer.charAt(counter - 3) === "." && c.type == Exceljs.ValueType.Number) {
+      cellData = c.text;
+      let counter: number = cellData.length;
+      if (cellData.charAt(counter - 3) === "." && c.type == Exceljs.ValueType.Number) {
         valueColumnLetter = sheet.getColumn(i).letter;
       }
     });
   }
 
-// vreemde valuta en bijhorend adress vinden
+
+
+    
+
+
+
+// vreemde valuta en bijhorend adress vinden | laatste conditional is hardcoded dien't nog aangepast te worden
   for (let i = 0; i < sheet.rowCount; i++) {
-    if (sheet.getCell(valutaColumnLetter + i).value != "EUR" && sheet.getCell(valutaColumnLetter + i).value != null && sheet.getCell(valutaColumnLetter + i).text !=="Value") {
-      buffer = sheet.getCell(valutaColumnLetter + i).text;
-      tempValuta.push(buffer);
-      buffer = sheet.getCell(valutaColumnLetter + i).address;
-      tempAdress.push(buffer);
+    if (sheet.getCell(valutaColumnLetter + i).value != "EUR" && sheet.getCell(valutaColumnLetter + i).value != null && sheet.getCell(valutaColumnLetter + i).text !=="Value") { 
+      cellData = sheet.getCell(valutaColumnLetter + i).text;
+      tempValuta.push(cellData);
+      cellData = sheet.getCell(valutaColumnLetter + i).address;
+      tempAdress.push(cellData);      
     }
   }
 
@@ -67,8 +74,8 @@ const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
   for (let i = 0; i < sheet.rowCount; i++) {
     if (sheet.getCell(dateColumnLetter + i).type == Exceljs.ValueType.Date && sheet.getCell(dateColumnLetter + i).value != null) {
       for (let n = 0; n < counter; n++) {
-        buffer = sheet.getCell(dateColumnLetter + i).address
-        if (buffer.substring(1, buffer.length) === tempAdress[n].substring(1, buffer.length)) {
+        cellData = sheet.getCell(dateColumnLetter + i).address
+        if (cellData.substring(1, cellData.length) === tempAdress[n].substring(1, cellData.length)) {
           bufferDate = sheet.getCell(dateColumnLetter + i).value as Date;
           tempDate.push(bufferDate);
         }
@@ -82,10 +89,10 @@ for (let i = 0; i < sheet.rowCount; i++) {
   if (sheet.getCell(valueColumnLetter + i).type == Exceljs.ValueType.Number && sheet.getCell(valueColumnLetter + i).value != null) {   
    
     for (let n = 0; n < counter; n++) {
-      buffer = sheet.getCell(valueColumnLetter + i).address
-      if (buffer.substring(1, buffer.length) === tempAdress[n].substring(1, buffer.length)) {
-        buffer = sheet.getCell(valueColumnLetter + i).text;
-        bufferToInt = parseInt(buffer);
+      cellData = sheet.getCell(valueColumnLetter + i).address
+      if (cellData.substring(1, cellData.length) === tempAdress[n].substring(1, cellData.length)) {
+        cellData = sheet.getCell(valueColumnLetter + i).text;
+        bufferToInt = parseInt(cellData);
         tempValue.push(bufferToInt);
       }
     }
@@ -93,7 +100,7 @@ for (let i = 0; i < sheet.rowCount; i++) {
 }
 
 
-//temp's bijeenvoegen in foundvaluta-object array 
+//cellData's bijeenvoegen in foundvaluta-object array 
 for (let i = 0; i < tempValuta.length; i++) {
   foundValutaObj.valuta = tempValuta[i]
   foundValutaObj.location = tempAdress[i]
@@ -103,29 +110,37 @@ for (let i = 0; i < tempValuta.length; i++) {
 }
 
 
-tempValuta.forEach(element => {
-  console.log(element);
-});
-tempValue.forEach(element => {
-  console.log(element);
-});
-  tempAdress.forEach(element => {
-    console.log(element);
-  });
-  tempDate.forEach(element => {
-    console.log(element);
-  });
-
-
-
-  
 
 
   console.log("valuta: " + valutaColumnLetter + " date: " + dateColumnLetter + " values: " + valueColumnLetter);
   console.log(foundValuta);
 
+  
+  return foundValuta  
 };
 
+
+const findHeaders = (workbook: Exceljs.Workbook, sheetID: number, columnletter: string) => {
+  let sheet: Exceljs.Worksheet = workbook.worksheets[sheetID];
+  let bool: boolean = false
+  let columnHeaders: string[] = [];
+
+    //kolomhoofdingen zoeken
+    sheet.getColumn(columnletter).eachCell((c) => {
+      if(c.value != null && bool == false)
+      {      
+        columnHeaders.push(c.address)
+        bool = true
+      }
+      if(c.value == null && bool == true)  
+      {
+        bool = false
+      }
+    })
+
+    return columnHeaders;
+
+}
 /*
 const findValutaEachSheet = (workbook: Exceljs.Workbook) => {
   let numberOfWorksheets: number = 0;
@@ -160,4 +175,5 @@ const findValutaEachSheet = (workbook: Exceljs.Workbook) => {
 
 export default {
   findValuta,
+  findHeaders
 };
