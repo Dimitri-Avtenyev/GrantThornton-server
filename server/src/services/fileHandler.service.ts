@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import checkValuta from "./checkValuta";
 
+
 const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
 
@@ -15,12 +16,10 @@ const main = async (workbook: ExcelJs.Workbook) => {
   // DEMO firstsheet, find value then write back to xlsx file
   let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
 
-  findFxValue(firstSheet);
+  // findFxValue(firstSheet);
 
   firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
   await workbook.xlsx.writeFile(`${OUTPUT_DIR}/demoVreemdeValuta.xlsx`);
-
-  checkValuta.findValuta(workbook, 0);
 
   // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
