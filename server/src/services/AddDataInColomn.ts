@@ -1,22 +1,34 @@
 
 import ExcelJs from "exceljs";
+import { FoundValutaData } from "../types";
+import { Finds } from "./checkValuta";
+import datastorageService from "./datastorage.service";
 
-// mainTestFunc(firstSheet);
 //http://localhost:3000/uploadfile/demo
 
-export const mainTestFunc = (worksheet: ExcelJs.Worksheet) :ExcelJs.Worksheet=>{
-    AddColumn(worksheet, 12);
+// let object : Finds = {} as Finds;  
+//   object = checkValuta.findColums(firstSheet); 
+//   let beginAndEndValues = checkValuta.findDataSet(firstSheet, object.columnLetterValuta)
 
-    //       column by num    11   12 && 13
-    copyColumnStyle(worksheet, "K", "L");
-    copyColumnStyle(worksheet, "K", "M");
+//   mainTestAddData(firstSheet, object, beginAndEndValues);
 
-    AddDataInColomn(worksheet); 
+
+export const mainTestAddData = (worksheet: ExcelJs.Worksheet, objectFinds : Finds, colulmHeaders : number[]) :ExcelJs.Worksheet=>{
+    AddColumn(worksheet, 12);  // aanpassen  K + 1, K omzetten naar number 
+    // console.log(getNextChar("Z"));
+    objectFinds.columnLetterRate = "L"; 
+    objectFinds.columnLetterConversion = "M";  
+    
+    copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterRate);
+    copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterConversion);
+
+    AddDataInColomn(worksheet, objectFinds, colulmHeaders); 
 
 
     return worksheet;
 }
 
+// Voegt 2 kollomen toe naast values kollom
 export const AddColumn = (worksheet: ExcelJs.Worksheet, startColomn : number) :ExcelJs.Worksheet=>{
     worksheet.spliceColumns(startColomn, 0, [], []);
     return worksheet;     
@@ -31,37 +43,67 @@ const copyColumnStyle = (worksheet: ExcelJs.Worksheet, keyCopyFromColumn: string
         // cell.value = worksheet.getCell(keyCopyFromColumn +rowNumber).value;
         // formula zit in value
     });
-
     return worksheet; 
 }
 
 //Conversion
 
-const AddDataInColomn = (worksheet: ExcelJs.Worksheet) :ExcelJs.Worksheet =>{
+const AddDataInColomn = (worksheet: ExcelJs.Worksheet, objectFinds: Finds, beginAndEndValues : number[]) :ExcelJs.Worksheet =>{
     //CurrencyRate
-    worksheet.getCell("L"+ 7).value = "Rate"; 
+    const rateColumn = worksheet.getColumn(objectFinds.columnLetterRate); // K? L
+    for (let i = 0; i < worksheet.rowCount; i++) {
+        if (worksheet.getCell(objectFinds.columnLetterDate + i).type == ExcelJs.ValueType.Date) {
+            if(worksheet.getCell(objectFinds.columnLetterValuta+ i).value=== "EUR"){
+                worksheet.getCell(objectFinds.columnLetterRate+ i).value = 1;
+            }else{
+                const exchangeRateData = datastorageService.getLocalData (worksheet.getCell("C8").value as Date);
+                exchangeRateData.then((respone)=> JSON.stringify(respone))
+                .then((result)=>{
+                    
+                })
+                worksheet.getCell(objectFinds.columnLetterRate+ i).value = 1.2;
 
-    const rateColumn = worksheet.getColumn("K");
-
-    let count = 0;
-    for(let cell of rateColumn.values){
-        if(cell === undefined){
-            count++;
+            }
         }
-        console.log(cell);
-        
     }
-    console.log(count);
-    
-
-    // rateColumn.values = [1,1,1,1,1,1,1];
+    for(let num of beginAndEndValues){
+        worksheet.getCell(objectFinds.columnLetterRate + num).value = "Rate"; // L
+    }  
+   
 
     //Conversion
-    worksheet.getCell("M" + 7).value = "Conversion"; 
+    for (let i = 0; i < worksheet.rowCount; i++) {
+        if (worksheet.getCell(objectFinds.columnLetterDate + i).type == ExcelJs.ValueType.Date) {
+        // let rate = parseInt(worksheet.getCell(objectFinds.columnLetterRate).text); 
+        // let value = parseInt(worksheet.getCell(objectFinds.columnLetterValue).text); 
+        // worksheet.getCell(objectFinds.columnLetterConversion +i ).value = value*rate; 
+        //    worksheet.getCell(objectFinds.columnLetterConversion + i).value = worksheet.getCell(objectFinds.columnLetterValue +i).value as number * 1.4694
+        // worksheet.getCell(objectFinds.columnLetterConversion + i).value = {sharedFormula :`${objectFinds.columnLetterValue + i}*${objectFinds.columnLetterRate+i}`, result:0};  
+
+        }
+    }
+    for(let num of beginAndEndValues){
+        worksheet.getCell(objectFinds.columnLetterConversion+ num).value = "Conversion"; // M
+    }
+  
     
     return worksheet;
 }
 
+
+
+const getNextChar= (char:string): string =>{
+    let letter = ""; 
+    if(char.length> 1){
+        //includes("Z"); 
+
+    }else if (char === "Z"){
+        letter = "AA"
+    }else{
+        letter = String.fromCharCode('Z'.charCodeAt(0)+1);
+    }
+    return letter;
+}
        
 
 

@@ -2,7 +2,7 @@ import ExcelJs from "exceljs";
 import fs from "fs/promises";
 import path from "path";
 import checkValuta from "./checkValuta";
-import { mainTestFunc } from "./AddDataInColomn";
+
 
 const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
@@ -17,12 +17,9 @@ const main = async (workbook: ExcelJs.Workbook) => {
   let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
 
   // findFxValue(firstSheet);
-  mainTestFunc(firstSheet);
 
   firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
   await workbook.xlsx.writeFile(`${OUTPUT_DIR}/demoVreemdeValuta.xlsx`);
-
-  checkValuta.findValuta(workbook, 0);
 
   // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
