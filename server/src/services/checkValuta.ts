@@ -32,8 +32,7 @@ const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
   let tempValuta: string[] = [];
   let tempValue: number[] = [];
 
-  let bool: boolean = false
-  let columnHeaders: string[] = [];
+
 
 
 // kolommen bepalen
@@ -54,18 +53,7 @@ const findValuta = (workbook: Exceljs.Workbook, sheetID: number) => {
   }
 
 
-  //kolomhoofdingen zoeken
-  sheet.getColumn(valueColumnLetter).eachCell((c) => {
-    if(c.value != null && bool == false)
-    {      
-      columnHeaders.push(c.address)
-      bool = true
-    }
-    if(c.value == null && bool == true)  
-    {
-      bool = false
-    }
-  })
+
     
 
 
@@ -122,9 +110,7 @@ for (let i = 0; i < tempValuta.length; i++) {
 }
 
 
-  columnHeaders.forEach(element => {
-    console.log(element);
-  });
+
 
   console.log("valuta: " + valutaColumnLetter + " date: " + dateColumnLetter + " values: " + valueColumnLetter);
   console.log(foundValuta);
@@ -133,6 +119,28 @@ for (let i = 0; i < tempValuta.length; i++) {
   return foundValuta  
 };
 
+
+const findHeaders = (workbook: Exceljs.Workbook, sheetID: number, columnletter: string) => {
+  let sheet: Exceljs.Worksheet = workbook.worksheets[sheetID];
+  let bool: boolean = false
+  let columnHeaders: string[] = [];
+
+    //kolomhoofdingen zoeken
+    sheet.getColumn(columnletter).eachCell((c) => {
+      if(c.value != null && bool == false)
+      {      
+        columnHeaders.push(c.address)
+        bool = true
+      }
+      if(c.value == null && bool == true)  
+      {
+        bool = false
+      }
+    })
+
+    return columnHeaders;
+
+}
 /*
 const findValutaEachSheet = (workbook: Exceljs.Workbook) => {
   let numberOfWorksheets: number = 0;
@@ -167,5 +175,5 @@ const findValutaEachSheet = (workbook: Exceljs.Workbook) => {
 
 export default {
   findValuta,
-  
+  findHeaders
 };
