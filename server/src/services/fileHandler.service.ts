@@ -1,15 +1,15 @@
 import ExcelJs from "exceljs";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
+import checkValuta from "./checkValuta";
 import { mainTestFunc } from "./AddDataInColomn";
 
 const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
-const files: string[] = fs.readdirSync(INPUT_DIR);
-
 
 // create workbook instance
 const main = async (workbook: ExcelJs.Workbook) => {
+  const files: string[] = await fs.readdir(INPUT_DIR);
 
   let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
   
@@ -20,9 +20,9 @@ const main = async (workbook: ExcelJs.Workbook) => {
   mainTestFunc(firstSheet);
 
   firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
-  workbook.xlsx.writeFile(`${OUTPUT_DIR}/testWriteToFile.xlsx`)
-    .then(() => console.log(`file created and stored @ ${OUTPUT_DIR}`));
+  await workbook.xlsx.writeFile(`${OUTPUT_DIR}/demoVreemdeValuta.xlsx`);
 
+  checkValuta.findValuta(workbook, 0);
 
   // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
@@ -39,7 +39,7 @@ const findFxValue = async (input: ExcelJs.Worksheet) => {
      }
     });
   }
-  console.log(`Foreign exchange symbols are found @ col ${columnLetter}`);
+  //console.log(`Foreign exchange symbols are found @ col ${columnLetter}`);
 }
 
 const checkFileExt = async (fileName:string):Promise<boolean> => {
@@ -50,6 +50,8 @@ const checkFileExt = async (fileName:string):Promise<boolean> => {
     throw new Error("File extension not allowed");
   }
   return allowedFileExtension === fileExtension;
+
+
 }
 
 export default {

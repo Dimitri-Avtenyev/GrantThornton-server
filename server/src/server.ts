@@ -4,8 +4,8 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import fileHandleRoute from "./routes/fileHandler.route";
-// demo test rates
-import exchangeRateService from "./services/exr.service";
+import datastorageService from "./services/datastorage.service";
+import { populateDB, populateLocalDB } from "./db";
 
 const app = express();
 
@@ -18,14 +18,15 @@ app.use(cors( {
 }));
 
 app.set("port", process.env.PORT || 3000);
-
 // router middleware
 app.use("/uploadfile", fileHandleRoute);
 
 
 app.listen(app.get("port"), async () => {
-  // demo test rates on start
-  await exchangeRateService.getEurRates(new Date("2023-10-16"), "2023-10-18");
+  // start auto get and store rates every 24h
+  await datastorageService.autoGetAndStoreRates(86400000);
+  // populate DB for 1 year of data
+  await Promise.all([ populateLocalDB(), populateDB()]);
 
   const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
   console.log(`---/ server started at port: ${app.get("port")} \\---`);
