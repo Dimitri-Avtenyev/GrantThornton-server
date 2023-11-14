@@ -1,6 +1,6 @@
 
 import ExcelJs from "exceljs";
-import { FoundValutaData } from "../types";
+import { ExchangeRate, FoundValutaData } from "../types";
 import { Finds } from "./checkValuta";
 import datastorageService from "./datastorage.service";
 
@@ -48,7 +48,7 @@ const copyColumnStyle = (worksheet: ExcelJs.Worksheet, keyCopyFromColumn: string
 
 //Conversion
 
-const AddDataInColomn = (worksheet: ExcelJs.Worksheet, objectFinds: Finds, beginAndEndValues : number[]) :ExcelJs.Worksheet =>{
+const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, beginAndEndValues : number[]) :Promise<ExcelJs.Worksheet> =>{
     //CurrencyRate
     const rateColumn = worksheet.getColumn(objectFinds.columnLetterRate); // K? L
     for (let i = 0; i < worksheet.rowCount; i++) {
@@ -56,12 +56,11 @@ const AddDataInColomn = (worksheet: ExcelJs.Worksheet, objectFinds: Finds, begin
             if(worksheet.getCell(objectFinds.columnLetterValuta+ i).value=== "EUR"){
                 worksheet.getCell(objectFinds.columnLetterRate+ i).value = 1;
             }else{
-                const exchangeRateData = datastorageService.getLocalData (worksheet.getCell("C8").value as Date);
-                exchangeRateData.then((respone)=> JSON.stringify(respone))
-                .then((result)=>{
-                    
-                })
-                worksheet.getCell(objectFinds.columnLetterRate+ i).value = 1.2;
+                let rates:ExchangeRate[] = await datastorageService.getLocalData(worksheet.getCell(objectFinds.columnLetterDate + i).value as Date);
+ 
+                let excRate:ExchangeRate|undefined  = rates.find( x => x.symbol === worksheet.getCell(objectFinds.columnLetterValuta + i).text);
+                console.log(excRate?.rate);
+                worksheet.getCell(objectFinds.columnLetterRate+ i).value = excRate?.rate;
 
             }
         }
