@@ -5,7 +5,9 @@ import exrService from "./exr.service";
 
 const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
   let _data: ExchangeRateDict = {};
+  date = exrService.weekdayCheckAndAdjust(date);
   let query: string = date.toISOString().split("T")[0];
+  
   try {
     await dbClient.connect();
 
@@ -73,6 +75,7 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
 
 const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
   let _data: ExchangeRateDict  = {};
+  date = exrService.weekdayCheckAndAdjust(date);
   let query: string | undefined = date?.toISOString().split("T")[0];
 
   const files: string[] = await fs.readdir("./src/localData");
