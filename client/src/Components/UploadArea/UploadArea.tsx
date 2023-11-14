@@ -14,6 +14,10 @@ import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import Box from "@mui/material/Box";
 import WelcomeText from '../WelcomeText/WelcomeText';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+
+
+
 
 
 const cache = createCache({
@@ -27,6 +31,7 @@ const UploadArea = () => {
     const [rejected, setRejected] = useState<FileRejection[]>([]);
     const [downloadlink, setDownloadLink] = useState<string>("");
     const [requestSucces, setRequestSucces] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const onDrop = useCallback((acceptedFiles : File[], rejectedFiles : FileRejection[]) => {
         if(acceptedFiles.length) {
@@ -57,6 +62,7 @@ const UploadArea = () => {
         e.preventDefault();
 
         if(!files.length) return;
+        setLoading (true); //loading start
 
         const formData = new FormData();
         files.forEach(file => formData.append("file", file));
@@ -78,6 +84,8 @@ const UploadArea = () => {
             }
         } catch (err) {
             console.log(err);
+        }finally {
+            setLoading (false) // na het laden afzetten
         }
         // -> ---------------- receive file as res --------------------- <- 
     }
