@@ -119,7 +119,7 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
     if (worksheet.getCell(objectFinds.columnLetterDate + c.row).type === ExcelJs.ValueType.Date) {
       const totalCell = worksheet.getCell(objectFinds.columnLetterValue + c.row);
       const rateCell = worksheet.getCell(objectFinds.columnLetterRate + c.row);
-      c.value = parseFloat(totalCell.value!.toString()) * parseFloat(rateCell.value!.toString());
+      c.value = parseFloat(totalCell.value!.toString()) / parseFloat(rateCell.value!.toString());
     }
   })
   // --- ******************************** --- ///
