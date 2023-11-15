@@ -22,7 +22,7 @@ const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
   } catch (err) {
     console.log(err);
   } finally {
-    await dbClient.close();
+    setTimeout(async() => {await dbClient.close()}, 10000)
   }
   return _data[query]
 }
