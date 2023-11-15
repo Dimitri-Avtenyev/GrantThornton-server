@@ -3,6 +3,7 @@ import ExcelJs from "exceljs";
 import { FoundValutaData } from "../types";
 import { Finds } from "./checkValuta";
 import datastorageService from "./datastorage.service";
+import { isObject } from "util";
 
 //http://localhost:3000/uploadfile/demo
 
@@ -15,15 +16,14 @@ import datastorageService from "./datastorage.service";
 
 export const mainTestAddData = (worksheet: ExcelJs.Worksheet, objectFinds : Finds, colulmHeaders : number[]) :ExcelJs.Worksheet=>{
     AddColumn(worksheet, 12);  // aanpassen  K + 1, K omzetten naar number 
-    // console.log(getNextChar("Z"));
-    objectFinds.columnLetterRate = "L"; 
-    objectFinds.columnLetterConversion = "M";  
-    
+
+    objectFinds.columnLetterRate = getNextChar(objectFinds.columnLetterValue); 
+    objectFinds.columnLetterConversion = getNextChar(objectFinds.columnLetterRate);  
+ 
     copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterRate);
     copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterConversion);
 
     AddDataInColomn(worksheet, objectFinds, colulmHeaders); 
-
 
     return worksheet;
 }
@@ -89,22 +89,29 @@ const AddDataInColomn = (worksheet: ExcelJs.Worksheet, objectFinds: Finds, begin
     
     return worksheet;
 }
-
-
-
-const getNextChar= (char:string): string =>{
-    let letter = ""; 
-    if(char.length> 1){
-        //includes("Z"); 
-
-    }else if (char === "Z"){
-        letter = "AA"
-    }else{
-        letter = String.fromCharCode('Z'.charCodeAt(0)+1);
-    }
-    return letter;
-}
        
-
+const getNextChar= (char:string): string =>{  // ZZ--> AAA
+    let letter = ""; 
+    char = char.toLocaleUpperCase(); 
+        if(char.endsWith('Z')){ //AZ --> BA
+            let strSplit =char.split(''); 
+            for (let i = char.length -1; i >= 0; i--) {            
+                if(strSplit[i] === 'Z'){
+                    strSplit[i] = 'A';   
+                }else{
+                    strSplit[i] =  String.fromCharCode(strSplit[i].charCodeAt(0)+1);
+                    break;
+                }
+            }    
+            letter =strSplit.join(''); 
+            if(strSplit.every(val => val === strSplit[0])){  // ZZ --> AAA
+                letter = letter + 'A'; 
+            }
+        }else{  // AB --> AC  , AAB --> AAC
+            letter = char.substring(0, char.length -1);
+            letter = letter + String.fromCharCode(char.substring(char.length -1).charCodeAt(0)+1);
+        }
+    return letter;   
+}
 
 
