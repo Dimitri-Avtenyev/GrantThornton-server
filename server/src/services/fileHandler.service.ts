@@ -1,7 +1,8 @@
 import ExcelJs from "exceljs";
 import fs from "fs/promises";
 import path from "path";
-import checkValuta from "./checkValuta";
+import checkValuta, { Finds } from "./checkValuta";
+import { AddData } from "./AddDataInColomn";
 
 
 const INPUT_DIR = "./src/input";
@@ -15,13 +16,14 @@ const main = async (workbook: ExcelJs.Workbook) => {
   
   // DEMO firstsheet, find value then write back to xlsx file
   let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
+  firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
 
   // findFxValue(firstSheet);
-
-  firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
+  let finds: Finds = checkValuta.findColums(firstSheet);
+  let colHeaders: number[] = checkValuta.findDataSet(firstSheet,"K")
+  
+  await AddData(firstSheet, finds, colHeaders);
   await workbook.xlsx.writeFile(`${OUTPUT_DIR}/demoVreemdeValuta.xlsx`);
-
-  // todo: cleanup -> remove unnec.files (e.g. cleanup();)
 }
 
 // demo find value and print location found said value
