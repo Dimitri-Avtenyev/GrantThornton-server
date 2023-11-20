@@ -73,7 +73,7 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
   }
 }
 
-const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
+const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
   let _data: ExchangeRateDict  = {};
   date = exrService.weekdayCheckAndAdjust(date);
   let query: string | undefined = date?.toISOString().split("T")[0];
