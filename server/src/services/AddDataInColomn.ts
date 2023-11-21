@@ -14,8 +14,9 @@ import { isObject } from "util";
 //   mainTestAddData(firstSheet, object, beginAndEndValues);
 
 
-export const AddData = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, colulmHeaders: number[]): Promise<void> => {
-  AddColumn(worksheet, 12);  // aanpassen  K + 1, K omzetten naar number 
+export const AddData = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, columnHeaders: number[]): Promise<void> => {
+  let colNumber:number = worksheet.getColumn(objectFinds.columnLetterValue).number;
+  AddColumn(worksheet, colNumber+1);  
   // console.log(getNextChar("Z"));
   objectFinds.columnLetterRate = getNextChar(objectFinds.columnLetterValue); 
   objectFinds.columnLetterConversion = getNextChar(objectFinds.columnLetterRate);  
@@ -23,7 +24,7 @@ export const AddData = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, 
   copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterRate);
   copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterConversion);
 
-  await AddDataInColomn(worksheet, objectFinds, colulmHeaders);
+  await AddDataInColomn(worksheet, objectFinds, columnHeaders);
 }
 
 // Voegt 2 kollomen toe naast values kollom
