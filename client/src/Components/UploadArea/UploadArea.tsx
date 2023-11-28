@@ -15,6 +15,7 @@ import createCache from '@emotion/cache';
 import Box from "@mui/material/Box";
 import WelcomeText from '../WelcomeText/WelcomeText';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import BackToHomeButton from '../BackToHomeButton/BackToHomeButton';
 
 
 
@@ -57,12 +58,14 @@ const UploadArea = () => {
     // const removeRejected = (name : string) => {
     //     setRejected(files => files.filter(({file}) => file.name !== name));
     // }
-
+    const handleLoading = ()=>{
+        setLoading(true);
+    }
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         if(!files.length) return;
-        setLoading (true); //loading start
+        
 
         const formData = new FormData();
         files.forEach(file => formData.append("file", file));
@@ -71,6 +74,7 @@ const UploadArea = () => {
         // hier is ineens een "guideline" voor file als response
          // -> ---------------- receive file as res --------------------- <-
         try {
+            //setLoading (true); //loading start
             const ENDPOINT = "http://localhost:3000/uploadfile"; //Moet process.env.URL worden
             const response = await fetch(ENDPOINT, {
                 method: "POST",
@@ -117,7 +121,8 @@ const UploadArea = () => {
                         alignItems="center"
                         sx={boxDefault}
                     >
-                        <Button variant="contained" type="submit" className={styles.convertButton}>Convert</Button>
+                        {loading &&  <LoadingIndicator></LoadingIndicator>}
+                        <Button variant="contained" type="submit" className={styles.convertButton} onClick={handleLoading}>Convert</Button>
                     </Box>
                 </form>
                 <div className={styles.listContainer}>
@@ -155,6 +160,7 @@ const UploadArea = () => {
                     <DownloadIcon></DownloadIcon>
                     Download files
                 </Button>
+                <BackToHomeButton></BackToHomeButton>
             </div>
             }
         </CacheProvider>
