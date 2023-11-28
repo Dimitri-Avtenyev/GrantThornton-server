@@ -1,21 +1,12 @@
 import { useState } from "react"
 // npm package geinstalleerd materialui 
 // button om terug te keren naar home pagine
-import { Button } from "@mui/material"
-import UploadArea from "../UploadArea/UploadArea"
-const HandleBackToHome =()=>{
-
-    return(
-
-        <UploadArea/>
-    )
-
-}
+import { Button, Link } from "@mui/material"
 const BackToHomeButton =()=>{
 
     return(
 
-<Button onClick={HandleBackToHome}>Home</Button>)
+<Button><Link href="/">Home</Link></Button>)
 
 }
 
