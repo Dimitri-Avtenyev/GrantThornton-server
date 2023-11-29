@@ -77,7 +77,10 @@ const UploadArea = () => {
          // -> ---------------- receive file as res --------------------- <-
         try {
             //setLoading (true); //loading start
-            const ENDPOINT = "http://localhost:3000/uploadfile"; //Moet process.env.URL worden
+            const ENDPOINT = process.env.NODE_ENV === "production" ? 
+            `${process.env.REACT_APP_URL_SERVER_PROD}/uploadfile`: 
+            `${process.env.REACT_APP_URL_SERVER_LOCAL}/uploadfile`;
+            
             const response = await fetch(ENDPOINT, {
                 method: "POST",
                 body: formData
