@@ -36,7 +36,7 @@ const getFile = async (req: Request, res: Response): Promise<Response|void> => {
       console.log(err);
       res.sendStatus(500);
     } else {
-      await fs.unlink(filepath);
+      await Promise.all([fs.unlink(filepath), fs.unlink(file.path)])
     }
   });
 };
