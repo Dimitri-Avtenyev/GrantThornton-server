@@ -48,7 +48,7 @@ const UploadArea = () => {
             setRejected(previousFiles => [...previousFiles, ...rejectedFiles])
         }
     }, [])
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, accept: {
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, maxFiles:1, accept: {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
     }})
 
@@ -102,73 +102,73 @@ const UploadArea = () => {
     }
 
     return (
-        <>
-<CacheProvider value={cache}>
-    {!requestSucces ?
-    <div className={styles.uploadArea}>
-        <WelcomeText/>
-        <form onSubmit={handleSubmit}>
-            <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
+    <>
+        <CacheProvider value={cache}>
+        {!requestSucces ?
+        <div className={styles.uploadArea}>
+            <WelcomeText/>
+            <form onSubmit={handleSubmit}>
+                <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                {
                 isDragActive ?
-                <Button className={styles.uploadButton} component="label" variant="contained">Drop the files here ...</Button> :
+                <Button className={styles.uploadButton} component="label" variant="contained">Plaats je bestand hier</Button> :
                 <Button className={styles.uploadButton} component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-                    Upload files
+                    Upload bestanden
                 </Button>
-            }
-            </div>
-            <Box
+                }
+                </div>
+                <Box
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
                 sx={boxDefault}
-            >
-                {showError && <p>test</p>}
-                {loading &&  <LoadingIndicator></LoadingIndicator>}
-                <Button variant="contained" type="submit" className={styles.convertButton} onClick={handleLoading}>Convert</Button>
-            </Box>
-        </form>
-        <div className={styles.listContainer}>
-            <List className={styles.fileList}>
-                {files.map((file) => (
-                    <ListItem className={styles.listItem} key={file.name}>
-                        <ArticleIcon className={styles.articleIcon}></ArticleIcon>
-                        <ListItemText className={styles.listItemText}>{file.name}</ListItemText>
-                        <DeleteIcon className={styles.deleteIcon} onClick={() => removeFile(file.name)}>X</DeleteIcon>
-                    </ListItem>
-                ))}
-            </List>
+                >
+                    {showError && <p>test</p>}
+                    {loading &&  <LoadingIndicator></LoadingIndicator>}
+                    <Button variant="contained" type="submit" className={styles.convertButton} onClick={handleLoading} disabled={!files.length}>Convert</Button>
+                </Box>
+            </form>
+            
+            <div className={styles.listContainer}>
+                <List className={styles.fileList}>
+                    {files.map((file) => (
+                        <ListItem className={styles.listItem} key={file.name}>
+                            <ArticleIcon className={styles.articleIcon}></ArticleIcon>
+                            <ListItemText className={styles.listItemText}>{file.name}</ListItemText>
+                            <DeleteIcon className={styles.deleteIcon} onClick={() => removeFile(file.name)}>X</DeleteIcon>
+                        </ListItem>
+                    ))}
+                </List>
 
-            <List> 
-                {rejected.map(({file, errors}) => (
-                    <ListItem key={file.name}>
-                        <ListItemText>{file.name}</ListItemText>
-                        <List>
-                            {errors.map(error => (
-                                <ListItemText className={styles.errorMessage} key={error.code}>File must be an Excel File!</ListItemText>
+             <List> 
+                    {rejected.map(({file, errors}) => (
+                        <ListItem key={file.name}>
+                            <ListItemText>{file.name}</ListItemText>
+                            <List>
+                                {errors.map(error => (
+                                    <ListItemText className={styles.errorMessage} key={error.code}>Bestand moet een Excel bestand zijn!</ListItemText>
                             ))}
-                        </List>
-                    </ListItem>
-                    
-                ))}
+                            </List>
+                        </ListItem>
+                    ))}
             </List> 
-        </div> 
-    </div>
-    :                        
-    <div className={styles.downloadArea}>
-        <div className={styles.fileCountTextContainer}>
-            <p>Er werden X onbekende valuta gevonden. <br /> Klik op onderstaande knop om uw bestand te downloaden.</p>
+            </div> 
         </div>
-        <Button href={downloadlink} component={Link} download={"demoProcessedFile.xlsx"} variant="contained" className={styles.downloadButton}>
-            <DownloadIcon></DownloadIcon>
-            Download files
-        </Button>
-        <BackToHomeButton></BackToHomeButton>
-    </div>
-    }
-</CacheProvider>
-        </>
+        :                        
+        <div className={styles.downloadArea}>
+            <div className={styles.fileCountTextContainer}>
+                <p>Download je bestand!</p>
+            </div>
+            <Button href={downloadlink} component={Link} download={"demoProcessedFile.xlsx"} variant="contained" className={styles.downloadButton}>
+                <DownloadIcon></DownloadIcon>
+            Download bestand
+            </Button>
+            <BackToHomeButton></BackToHomeButton>
+        </div>
+        }
+        </CacheProvider>
+    </>
         
     )
 }
