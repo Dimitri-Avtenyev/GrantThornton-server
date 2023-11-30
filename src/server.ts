@@ -13,11 +13,11 @@ const app = express();
 app.use(express.json({limit: "1mb"}));
 app.use(express.urlencoded({extended: true}));
 app.use(cors( {
-  origin: ["http://localhost:3001", `${process.env.CLIENT_URL}`],
+  origin: ["http://localhost:3000", `${process.env.CLIENT_URL}`],
   credentials: true
 }));
 
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT || 3005);
 // router middleware
 app.use("/uploadfile", fileHandleRoute);
 
