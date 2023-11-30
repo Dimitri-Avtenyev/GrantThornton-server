@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from "express";
 import cors from "cors";
+import welcomeRoute from "./routes/welcome.route";
 import fileHandleRoute from "./routes/fileHandler.route";
 import datastorageService from "./services/datastorage.service";
 import { populateDB, populateLocalDB } from "./db";
@@ -19,6 +20,7 @@ app.use(cors( {
 
 app.set("port", process.env.PORT || 3005);
 // router middleware
+app.use("/", welcomeRoute);
 app.use("/uploadfile", fileHandleRoute);
 
 
