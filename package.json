@@ -5,7 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "start": "npm run build && npm run run-build",
-    "build": "tsc && mkdir -p build/input build/output build/localData",
+    "develop": "ts-node src/server.ts",
+    "build": "tsc",
     "run-build": "node build/server.js",
     "test": "jest"
   },

@@ -9,10 +9,11 @@ const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
 
 // create workbook instance
-const main = async (workbook: ExcelJs.Workbook) => {
-  const files: string[] = await fs.readdir(INPUT_DIR);
+const main = async (workbook: ExcelJs.Workbook, buffer:ExcelJs.Buffer):Promise<ExcelJs.Buffer> => {
+  //const files: string[] = await fs.readdir(INPUT_DIR);
 
-  let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
+  //let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
+  let xlsx:ExcelJs.Workbook = await workbook.xlsx.load(buffer);
   
   const promises:Promise<void>[] = [];
   xlsx.eachSheet(worksheet => {
@@ -31,8 +32,8 @@ const main = async (workbook: ExcelJs.Workbook) => {
   });
   await Promise.allSettled(promises);
 
-  await workbook.xlsx.writeFile(`${OUTPUT_DIR}/PROCESSED_VreemdeValuta.xlsx`);
-
+  //await workbook.xlsx.writeFile(`${OUTPUT_DIR}/PROCESSED_VreemdeValuta.xlsx`);
+  return await workbook.xlsx.writeBuffer();
 }
 
 

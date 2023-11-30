@@ -129,7 +129,8 @@ const GetAndStoreRates = async () => {
   dayBefore.setDate(today.getDate() - 1);
 
   const rates: ExchangeRateDict = await exrService.getEurRates(dayBefore);
-  Promise.all([saveDbData(rates), saveLocalData(rates)])
+  // Promise.all([saveDbData(rates), saveLocalData(rates)])
+  await saveDbData(rates);
 }
 
 const autoGetAndStoreRates = async (time: number) => {
