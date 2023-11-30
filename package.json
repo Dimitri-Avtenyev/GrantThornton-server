@@ -4,8 +4,10 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "npm run build && npm run run-build",
+    "develop": "ts-node src/server.ts",
     "build": "tsc",
+    "run-build": "node build/server.js",
     "test": "jest"
   },
   "author": "Dimitri Avtenyev <dimitri.avtenyev@gmail.com> (https://github.com/Dimitri-Avtenyev)",

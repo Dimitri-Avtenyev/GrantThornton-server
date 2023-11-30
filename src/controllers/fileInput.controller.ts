@@ -25,26 +25,39 @@ const getFile = async (req: Request, res: Response): Promise<Response|void> => {
   }
 
   // Process the uploaded file 
-  let workbook: ExcelJs.Workbook = new ExcelJs.Workbook();
-  await fileHandlerService.main(workbook);
-  
+  try {
+    let workbook: ExcelJs.Workbook = new ExcelJs.Workbook();
+    let processedfile = await fileHandlerService.main(workbook, file.buffer);
+    return res.send(processedfile);
+    
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal server error");
+  }
+
   // ready and send back processed file
-  const filesInOutput:string[] = await fs.readdir("./src/output");
-  const filepath:string = path.join(__dirname, "..","output",filesInOutput[0]);
-  return res.status(200).sendFile(filepath, async (err) => {
-    if (err) {
-      console.log(err);
-      res.sendStatus(500);
-    } else {
-      await Promise.all([fs.unlink(filepath), fs.unlink(file.path)])
-    }
-  });
+  
+  // const filesInOutputPath:string = path.join(__dirname, "..", "output");
+  // console.log(filesInOutputPath)
+  // const filesInOutput:string[] = await fs.readdir(filesInOutputPath);
+  // console.log(filesInOutput);
+  // const filepath:string = path.join(__dirname, "..","output", filesInOutput[0]);
+  // console.log(filepath);
+  // return res.status(200).sendFile(filepath, async (err) => {
+  //   if (err) {
+  //     console.log(err);
+  //     res.sendStatus(500);
+  //   } else {
+  //     await Promise.all([fs.unlink(filepath), fs.unlink(file.path)])
+  //   }
+  // });
+  
 };
 
 // for demo purposes
 const getFileLocalDemo = async (req: Request, res: Response): Promise<Response> => {
   let workbook: ExcelJs.Workbook = new ExcelJs.Workbook();
-  await fileHandlerService.main(workbook);
+  //await fileHandlerService.main(workbook);
 
   return res.status(200).send({ message: "file uploaded succesfully" });
 }
