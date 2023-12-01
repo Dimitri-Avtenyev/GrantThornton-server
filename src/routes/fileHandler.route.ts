@@ -19,8 +19,4 @@ const upload = multer({ storage: storage});
 // upload file
 router.post("/", upload.single("file"), fileHandlerController.getFile);
 
-// get for demo purpose
-router.get('/demo', fileHandlerController.getFileLocalDemo);
-
-
 export default router;
