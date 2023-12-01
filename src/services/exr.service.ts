@@ -64,12 +64,6 @@ const exchangeRateDictBuilderECB = async (data: ExchangeRateData): Promise<Excha
   return eurRates;
 }
 
-
-
-//--- data retrieval from "exchangeratesapi" ---///
-//   todo?
-// ---                                      ---///
-
 const atLeastOneDayOlder = (date: Date): boolean => {
   const today: Date = new Date();
   const timeDiff = today.getTime() - date.getTime();
