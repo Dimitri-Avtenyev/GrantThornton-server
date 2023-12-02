@@ -39,12 +39,8 @@ export const closeDb = async () => {
 }
 
 // populate db 
-let populateddDb: boolean = false; //run only once on startup
-
-export const populateDB = async (): Promise<boolean> => {
-  if (populateddDb) {
-    return false
-  }
+export const populateDB = async () => {
+  
   try {
     await dbClient.connect();
     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
@@ -56,9 +52,6 @@ export const populateDB = async (): Promise<boolean> => {
 
       let rates: ExchangeRateDict = await exrService.getEurRates(startPeriod, endPeriod);
       await datastorageService.saveDbData(rates);
-      populateddDb = true;
-
-      return true;
     }
   } catch (err) {
     console.log(err);
@@ -68,10 +61,7 @@ export const populateDB = async (): Promise<boolean> => {
   return true;
 }
 
-export const populateLocalDB = async (): Promise<boolean> => {
-  if (populateddDb) {
-    return false;
-  }
+export const populateLocalDB = async () => {
 
   const endPeriod: Date = new Date();
   const startPeriod: Date = new Date();
@@ -79,7 +69,4 @@ export const populateLocalDB = async (): Promise<boolean> => {
 
   let rates: ExchangeRateDict = await exrService.getEurRates(startPeriod, endPeriod);
   await datastorageService.saveLocalData(rates);
-  populateddDb = true;
-
-  return true;
 }
