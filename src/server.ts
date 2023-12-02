@@ -30,7 +30,7 @@ app.listen(app.get("port"), async () => {
   await datastorageService.autoGetAndStoreRates(86400000);
   // populate DB for 1 year of data
   // await Promise.all([ populateLocalDB(), populateDB()]);
-  await populateDB();
+  //await populateDB();
   const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
   console.log(`---/ server started at port: ${app.get("port")} \\---`);
   console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);

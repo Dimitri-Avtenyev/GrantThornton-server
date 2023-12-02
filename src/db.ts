@@ -25,7 +25,6 @@ export const connectDb = async () => {
   try {
     await dbClient.connect();
     console.log("Connection to db has been established.");
-    process.on("SIGINT", closeDb);
   } catch (err) {
     console.log("Conecting failed, error: " + err);
   }
