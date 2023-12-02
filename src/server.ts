@@ -24,12 +24,12 @@ app.set("port", process.env.PORT || 3005);
 app.use("/", welcomeRoute);
 app.use("/uploadfile", fileHandleRoute);
 
-
-app.listen(app.get("port"), async () => {
-  // start auto get and store rates every 24h
-  //await datastorageService.autoGetAndStoreRates(86400000);
-  await populateDB();
-  const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
-  console.log(`---/ server started at port: ${app.get("port")} \\---`);
-  console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);
-});
+populateDB().then(
+  async () => {
+    app.listen(app.get("port"), async () => {
+      const locationStart:string = `---> http://localhost:${app.get("port")} <---`;
+      console.log(`---/ server started at port: ${app.get("port")} \\---`);
+      console.log(`    ${"*".repeat(locationStart.length)}\n    ${locationStart}\n    ${"*".repeat(locationStart.length)}`);
+    });
+  }
+)
