@@ -9,8 +9,6 @@ const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
   let query: string = date.toISOString().split("T")[0];
   
   try {
-    await dbClient.connect();
-
     let data: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({[query]: {$exists:true}});
     if (!data) {
       console.log(`No data has been found with for: ${query}, fetching new data from ECB and updating db`);
@@ -21,16 +19,13 @@ const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
     }
   } catch (err) {
     console.log(err);
-  } finally {
-    setTimeout(async() => {await dbClient.close()}, 10000)
-  }
+  } 
   return _data[query]
 }
 
 const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
-  try {
-    await dbClient.connect();
 
+  try {
     // check if collection is empty
     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
     if (collectionCount === 0) {
@@ -68,9 +63,7 @@ const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
 
   } catch (err) {
     console.log(err);
-  } finally {
-    await dbClient.close();
-  }
+  } 
 }
 
 const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {

@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import fileHandlerService from "../services/fileHandler.service";
 import ExcelJs from "exceljs";
+import { closeDb, connectDb } from "../db";
 
 // get the uploaded file through POST with formData
 const getFile = async (req: Request, res: Response): Promise<Response|void> => {
@@ -23,8 +24,12 @@ const getFile = async (req: Request, res: Response): Promise<Response|void> => {
 
   // Process the uploaded file 
   try {
+    await connectDb();
+
     let workbook: ExcelJs.Workbook = new ExcelJs.Workbook();
     let processedfile = await fileHandlerService.main(workbook, file.buffer);
+    
+    await closeDb();
     return res.send(processedfile);
     
   } catch (err) {

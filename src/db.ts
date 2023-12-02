@@ -21,7 +21,7 @@ export const connectionString = (uri: string) => {
 connectionString(uri)
 export const dbClient = new MongoClient(connectionString(uri));
 
-const connectDb = async () => {
+export const connectDb = async () => {
   try {
     await dbClient.connect();
     console.log("Connection to db has been established.");
@@ -30,7 +30,7 @@ const connectDb = async () => {
     console.log("Conecting failed, error: " + err);
   }
 }
-const closeDb = async () => {
+export const closeDb = async () => {
   try {
     await dbClient.close();
     console.log("Connection to the db has been closed.");
