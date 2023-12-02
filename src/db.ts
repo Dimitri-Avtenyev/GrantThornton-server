@@ -21,7 +21,22 @@ export const connectionString = (uri: string) => {
 connectionString(uri)
 export const dbClient = new MongoClient(connectionString(uri));
 
-
+export const connectDb = async () => {
+  try {
+    await dbClient.connect();
+    console.log("Connection to db has been established.");
+  } catch (err) {
+    console.log("Conecting failed, error: " + err);
+  }
+}
+export const closeDb = async () => {
+  try {
+    await dbClient.close();
+    console.log("Connection to the db has been closed.");
+  } catch (err) {
+    console.log("Closing connection failed, error:" + err);
+  }
+}
 
 // populate db 
 let populateddDb: boolean = false; //run only once on startup
