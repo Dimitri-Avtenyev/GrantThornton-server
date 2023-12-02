@@ -46,6 +46,7 @@ export const populateDB = async () => {
     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
     
     if (collectionCount === 0) {
+      console.log("Populating db...");
       const endPeriod: Date = new Date();
       const startPeriod: Date = new Date();
       startPeriod.setFullYear(startPeriod.getFullYear() - 1);
@@ -58,7 +59,6 @@ export const populateDB = async () => {
   } finally {
     await dbClient.close();
   }
-  return true;
 }
 
 export const populateLocalDB = async () => {
