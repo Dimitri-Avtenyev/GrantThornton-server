@@ -12,12 +12,9 @@ const main = async (workbook: ExcelJs.Workbook, buffer:ExcelJs.Buffer):Promise<E
   const promises:Promise<void>[] = [];
   xlsx.eachSheet(worksheet => {
     let finds: Finds = checkValuta.findColums(worksheet);
-    let noValuta: boolean = true;
       console.log(`working for: ${worksheet.name}`);
-      if(finds.columnLetterValuta !== ""){
-       noValuta = false;
-      }
-      if (finds.columnLetterValuta) { //?
+
+      if (finds.columnLetterValuta) { 
         let beginValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
         let promise = AddData(worksheet, finds, beginValues).then(() =>  console.log(`DONE for: ${worksheet.name}`));
         promises.push(promise);
