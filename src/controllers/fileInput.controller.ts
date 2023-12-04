@@ -30,6 +30,12 @@ const getFile = async (req: Request, res: Response): Promise<Response|void> => {
     let processedfile = await fileHandlerService.main(workbook, file.buffer);
     
     await closeDb();
+    // !!!---- only adjust this value, assign a func with boolean as return ----!!! //
+    let valutaFound:boolean = true; // replace with a check which returns boolean
+    // !!!----------------------------------------------------------------------!!! //
+    if (!valutaFound) {
+      return res.sendStatus(204); // "No content" file has been read and nothing has been found to process
+    }
     return res.send(processedfile);
     
   } catch (err) {
