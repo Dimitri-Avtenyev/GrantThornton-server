@@ -1,6 +1,7 @@
 import ExcelJs from "exceljs";
 import path from "path";
-import checkValuta, { Finds } from "./checkValuta";
+import checkValuta from "./checkValuta";
+import { Finds } from "../types";
 import { AddData } from "./AddDataInColomn";
 
 // create workbook instance
@@ -12,10 +13,10 @@ const main = async (workbook: ExcelJs.Workbook, buffer:ExcelJs.Buffer):Promise<E
   xlsx.eachSheet(worksheet => {
     let finds: Finds = checkValuta.findColums(worksheet);
       console.log(`working for: ${worksheet.name}`);
-      
-      if (finds.columnLetterValuta) {
-        let beginAndEndValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
-        let promise = AddData(worksheet, finds, beginAndEndValues).then(() =>  console.log(`DONE for: ${worksheet.name}`));
+
+      if (finds.columnLetterValuta) { 
+        let beginValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
+        let promise = AddData(worksheet, finds, beginValues).then(() =>  console.log(`DONE for: ${worksheet.name}`));
         promises.push(promise);
       }
 

@@ -1,7 +1,6 @@
 
 import ExcelJs from "exceljs";
-import { ExchangeRate, FoundValutaData } from "../types";
-import { Finds } from "./checkValuta";
+import { ExchangeRate, Finds } from "../types";
 import datastorageService from "./datastorage.service";
 import { isObject } from "util";
 

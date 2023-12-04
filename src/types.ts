@@ -14,6 +14,14 @@ export interface FoundValutaData {
   date: Date;
 }
 
+export interface Finds {
+  columnLetterValue : string; 
+  columnLetterValuta : string; 
+  columnLetterDate : string; 
+  columnLetterRate : string; 
+  columnLetterConversion :string; 
+}
+
 export interface ExchangeRateData {
   header: {
     id: string;
