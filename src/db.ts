@@ -40,14 +40,11 @@ export const closeDb = async () => {
 
 // populate db 
 export const populateDB = async () => {
-  //test insert one
-  // let rates = await exrService.getEurRates(new Date("2023-12-10"));
 
-  // await datastorageService.saveDbData(rates);
   try {
     await dbClient.connect();
     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
-   
+    // most recently inserted document date, means there's at least some activity within 3 months span
     let mostRecentDocument = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne({}, {sort: {$natural: -1}});
     let dateMostRecentDocument = mostRecentDocument?._id.getTimestamp();
     let today:Date = new Date();
