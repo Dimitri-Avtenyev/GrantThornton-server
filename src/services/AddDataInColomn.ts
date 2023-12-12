@@ -16,13 +16,15 @@ import { isObject } from "util";
 
 export const AddData = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, columnHeaders: number[]): Promise<void> => {
   let colNumber:number = worksheet.getColumn(objectFinds.columnLetterValue).number;
-  AddColumn(worksheet, colNumber+1);  
-  // console.log(getNextChar("Z"));
   objectFinds.columnLetterRate = getNextChar(objectFinds.columnLetterValue); 
   objectFinds.columnLetterConversion = getNextChar(objectFinds.columnLetterRate);  
+
+  if(!CheckIfColumsAlreadyExists(worksheet)){
+    AddColumn(worksheet, colNumber+1); 
   
-  copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterRate);
-  copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterConversion);
+    copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterRate);
+    copyColumnStyle(worksheet, objectFinds.columnLetterValue, objectFinds.columnLetterConversion);
+  }
 
   await AddDataInColomn(worksheet, objectFinds, columnHeaders);
 }
@@ -79,7 +81,7 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
       }
     });
   }
-  console.log(`rates found @ ${rateColumn} and its dates @ ${dateColumn}`);
+  // console.log(`rates found @ ${rateColumn} and its dates @ ${dateColumn}`);
 
   const column: ExcelJs.Column = worksheet.getColumn(objectFinds.columnLetterRate);
   const promises: Promise<void>[] = [];
@@ -98,14 +100,14 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
           .then(fxRates => {
             let fxRate: ExchangeRate | undefined = fxRates.find(x => x.symbol === symbol);
             c.value = fxRate?.rate;
-            console.log(c.value);
+            // console.log(c.value);
           });
         promises.push(promise);
       }
     }
   });
   await Promise.allSettled(promises);
-  console.log("async done, rates added!")
+  // console.log("async done, rates added!")
 
 
   // --- ******************************** --- ///
@@ -163,6 +165,25 @@ const getNextChar= (char:string): string =>{  // ZZ--> AAA
     return letter;   
 }
        
+const CheckIfColumsAlreadyExists = (worksheet: ExcelJs.Worksheet) :boolean=> {
+  let check :boolean = false;
+  for (let i = 1; i < worksheet.actualColumnCount; i++) {
+    worksheet.getColumn(i).eachCell((c) => {
+      if (c.value === "Rate") {    
+        const numberColumnArray = c.address.split("");
+        const valueNextColumnNumber =  worksheet.getCell(worksheet.getColumn(i+1).letter + numberColumnArray[1]).value
+        if( valueNextColumnNumber === "Conversion"){
+          check = true;
+          return check;
+        }
+      }
+    });
+    if(check){
+      break;
+    }
+  }
+  return check;
+};
 
 
 
