@@ -40,20 +40,36 @@ export const closeDb = async () => {
 
 // populate db 
 export const populateDB = async () => {
-  
+  //test insert one
+  // let rates = await exrService.getEurRates(new Date("2023-12-10"));
+
+  // await datastorageService.saveDbData(rates);
   try {
     await dbClient.connect();
     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
-    
-    if (collectionCount === 0) {
+   
+    let mostRecentDocument = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne({}, {sort: {$natural: -1}});
+    let dateMostRecentDocument = mostRecentDocument?._id.getTimestamp();
+    let today:Date = new Date();
+    let threeMonthsAgo:Date = new Date();
+    threeMonthsAgo.setMonth(today.getMonth() - 3);
+    let documentsNeedRefresh:boolean = false;
+
+    if (dateMostRecentDocument) {
+      documentsNeedRefresh = dateMostRecentDocument.getMonth() < threeMonthsAgo.getMonth();
+    }
+    if (collectionCount === 0 || collectionCount > 700 || documentsNeedRefresh) {
+      console.log("Renewing data to more recent one");
+      await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).deleteMany({});
       console.log("Populating db...");
       const endPeriod: Date = new Date();
       const startPeriod: Date = new Date();
       startPeriod.setFullYear(startPeriod.getFullYear() - 1);
-
+  
       let rates: ExchangeRateDict = await exrService.getEurRates(startPeriod, endPeriod);
       await datastorageService.saveDbData(rates);
     }
+ 
   } catch (err) {
     console.log(err);
   } finally {
